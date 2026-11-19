@@ -10,7 +10,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <script>
+        window.__STATIC_PREFIX__ = (window.location.protocol === 'file:') ? '../static' : '/static';
+        document.write('<link rel="stylesheet" href="' + window.__STATIC_PREFIX__ + '/css/style.css" />');
+    </script>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -415,8 +418,10 @@
         </div>
     </div>
 
-    <script src="/static/js/textures_pbr.js"></script>
-    <script src="/static/js/models_3d.js"></script>
-    <script src="/static/js/main.js"></script>
+    <script>
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/textures_pbr.js"><\/script>');
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/models_3d.js"><\/script>');
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/main.js"><\/script>');
+    </script>
 </body>
 </html>

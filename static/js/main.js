@@ -2,20 +2,183 @@
  * ============================================================================
  * MAIN APPLICATION CONTROLLER (static/js/main.js)
  * Mengatur:
- * 1. Laboratorium Rakit PC 3D Realistis (Drag & Drop ke Slot Motherboard/PSU)
+ * 1. Laboratorium Rakit PC 3D Realistis (Langsung Render 3D Seketika + Drag & Drop)
  * 2. Galeri Inspeksi Komponen Asli 360° (Penjelasan Bentuk, Warna, & Analogi)
- * 3. Kuis Evaluasi TIK Kelas VII (Terhubung ke Backend Python / Vercel API)
- * 4. Rekap Nilai Guru & Ekspor CSV (Sinkronisasi Server + Browser Backup)
+ * 3. Kuis Evaluasi TIK Kelas VII (Backend Python / Vercel API + Mode Offline)
+ * 4. Rekap Nilai Guru & Ekspor CSV (Sinkronisasi Server + Browser LocalStorage)
  * ============================================================================
  */
 
 (function () {
     const T = window.HardwareTextures;
     const M = window.HardwareModels3D;
-    const LOCAL_BACKUP_KEY = 'sim_hardware_3d_records_v1';
+    const LOCAL_BACKUP_KEY = 'sim_hardware_3d_records_v2';
 
-    let CATALOG = {};
-    let MOTHERBOARD_META = {};
+    const DEFAULT_MOTHERBOARD_META = {
+        id: "motherboard",
+        name: "Motherboard ATX Z890-PRO",
+        subtitle: "Papan Sirkuit Utama (Mainboard) • Socket LGA1851",
+        category: "Processing & Interconnect Hub",
+        physical_appearance: "Papan PCB fiberglass hijau-gelap/hitam berukuran persegi panjang dengan jalur sirkuit tembaga keemasan, kapasitor silinder perak, heatsink aluminium, soket CPU berpenutup logam, slot RAM memanjang, slot M.2, dan slot VGA bertulang baja.",
+        description: "Motherboard adalah papan sirkuit utama tempat seluruh komponen komputer (Processor, RAM, SSD M.2, VGA, dan kabel daya PSU) terhubung dan saling berkomunikasi.",
+        analogy: "Seperti jalan raya dan tata kota yang menghubungkan pusat pemerintahan (CPU), meja kerja (RAM), gudang arsip (SSD), dan pembangkit listrik (PSU).",
+        specs: "Form Factor ATX • Socket LGA1851 • 4x Slot DDR5 DIMM • Slot M.2 NVMe • PCIe 5.0 x16 • ATX 24-Pin"
+    };
+
+    const DEFAULT_CATALOG = {
+        cpu: {
+            id: "cpu",
+            name: "Processor (CPU)",
+            short_name: "CPU Intel Ultra 9",
+            subtitle: "Intel Core Ultra 9 285K • Socket LGA1851",
+            category: "Processing Device (Perangkat Pemroses)",
+            target_slot: "slot_cpu",
+            slot_label: "Soket Processor (LGA1851) di Tengah Motherboard",
+            order_hint: 1,
+            requires: [],
+            physical_appearance: "Keping persegi berukuran ±4,5 cm dengan papan sirkuit hijau di tepi, pelat logam nikel perak mengilap (IHS) bertuliskan seri prosesor, bagian bawah dipenuhi titik kontak emas, serta tanda segitiga emas di salah satu sudut.",
+            description: "Central Processing Unit (CPU) adalah otak utama komputer yang mengeksekusi instruksi program dan melakukan perhitungan aritmetika serta logika. Dipasang tepat pada soket prosesor di tengah motherboard.",
+            analogy: "Seperti otak manusia atau koki utama di dapur yang mengolah semua perintah dari pengguna.",
+            specs: "24 Core • Boost 5.70 GHz • Cache 36 MB • Socket LGA1851"
+        },
+        ram: {
+            id: "ram",
+            name: "Memory RAM 16GB",
+            short_name: "RAM DDR5 Green PCB",
+            subtitle: "DDR5 5600MHz Green PCB Asli (2x8GB)",
+            category: "Processing / Volatile Memory",
+            target_slot: "slot_ram",
+            slot_label: "Slot RAM (DIMM DDR5) di Samping Soket CPU",
+            order_hint: 2,
+            requires: [],
+            physical_appearance: "Keping papan sirkuit (PCB) berwarna hijau asli standar industri dengan deretan chip memori IC hitam berjejer, stiker spesifikasi putih, serta deretan pin konektor emas di bagian bawah yang memiliki takik (celah kunci) tidak simetris.",
+            description: "Random Access Memory (RAM) berfungsi menyimpan data dan program yang sedang aktif dijalankan secara sementara. Data pada RAM akan hilang saat listrik padam (bersifat volatile).",
+            analogy: "Seperti meja kerja tempat menaruh buku dan alat tulis yang sedang dipakai belajar; semakin luas mejanya, semakin banyak aplikasi bisa dibuka bersamaan.",
+            specs: "16 GB (2x8 GB) DDR5 • Kecepatan 5600 MT/s • 288-Pin Gold Finger"
+        },
+        ssd: {
+            id: "ssd",
+            name: "SSD NVMe M.2 1TB",
+            short_name: "SSD NVMe M.2",
+            subtitle: "PCIe Gen5 x4 • Ukuran 2280 (22x80 mm)",
+            category: "Storage Device (Perangkat Penyimpanan)",
+            target_slot: "slot_ssd",
+            slot_label: "Slot M.2 NVMe di Permukaan Motherboard",
+            order_hint: 3,
+            requires: [],
+            physical_appearance: "Papan sirkuit kecil ramping berukuran 2,2 x 8 cm dengan chip memori hitam (NAND Flash), stiker label biru-hitam, pin emas M-Key di ujung kiri, dan lekukan baut pengunci di ujung kanan.",
+            description: "Solid State Drive (SSD) NVMe M.2 adalah media penyimpanan data berkecepatan tinggi berbasis chip semikonduktor untuk menyimpan Sistem Operasi Windows, aplikasi, dan dokumen secara permanen.",
+            analogy: "Seperti lemari arsip permanen modern yang menyimpan seluruh buku dan catatan dengan aman meskipun aliran listrik dimatikan.",
+            specs: "Kapasitas 1 TB • NVMe PCIe Gen5 x4 • Kecepatan Baca 12.000 MB/s"
+        },
+        vga: {
+            id: "vga",
+            name: "VGA / GPU Card",
+            short_name: "VGA NVIDIA RTX 5090",
+            subtitle: "NVIDIA GeForce RTX 5090 • 32GB GDDR7",
+            category: "Processing / Graphics Output",
+            target_slot: "slot_vga",
+            slot_label: "Slot VGA (PCIe x16 Bertulang Baja) di Motherboard",
+            order_hint: 4,
+            requires: [],
+            physical_appearance: "Kartu grafis NVIDIA GeForce RTX 5090 berdesain rangka logam gunmetal dengan dua kipas pendingin axial-tech besar, sirip heatsink aluminium padat, pipa pendingin tembaga, logo GEFORCE RTX menyala hijau, dan konektor emas PCIe 5.0 x16.",
+            description: "Video Graphics Array (VGA) atau Graphics Processing Unit (GPU) bertugas mengolah data grafis dan mengirimkan sinyal tampilan visual ke layar monitor.",
+            analogy: "Seperti pelukis dan desainer khusus yang menggambar seluruh tampilan layar, animasi, dan video agar tampil tajam di monitor.",
+            specs: "32 GB GDDR7 • Interface PCIe 5.0 x16 • Dual Axial Fan • HDMI 2.1 & DP"
+        },
+        psu: {
+            id: "psu",
+            name: "Power Supply (PSU)",
+            short_name: "PSU 850W Gold",
+            subtitle: "850W 80+ Gold ATX 3.1 Power Unit",
+            category: "Power Supply Unit (Luar Motherboard)",
+            target_slot: "slot_psu",
+            slot_label: "Ruang Dudukan PSU di Luar Area Motherboard",
+            order_hint: 5,
+            requires: [],
+            physical_appearance: "Kotak logam besi berwarna hitam doff berukuran besar dengan stiker tabel tegangan (+12V, +5V, +3.3V), sakelar daya merah, dan soket kabel listrik AC di bagian belakang.",
+            description: "Power Supply Unit (PSU) dipasang di ruang khusus pada casing di luar area motherboard. PSU mengubah arus listrik bolak-balik (AC 220V) dari stopkontak menjadi arus searah (DC +12V, +5V, +3.3V).",
+            analogy: "Seperti jantung atau gardu induk listrik yang menyuplai energi stabil ke seluruh bagian rumah.",
+            specs: "Daya 850 Watt • Sertifikasi 80+ Gold • ATX 3.1 • Proteksi OVP/SCP"
+        },
+        cable: {
+            id: "cable",
+            name: "Kabel Power ATX 24-Pin",
+            short_name: "Kabel Daya ATX",
+            subtitle: "Kabel Daya Utama PSU ke Motherboard & VGA",
+            category: "Power Distribution Cable",
+            target_slot: "slot_cable",
+            slot_label: "Port Power 24-Pin ATX di Tepi Kanan Motherboard",
+            order_hint: 6,
+            requires: ["psu"],
+            physical_appearance: "Berkas kabel listrik dengan warna standar ATX (kuning +12V, merah +5V, oranye +3.3V, hitam ground) yang keluar dari unit PSU dan berakhir pada kepala konektor plastik 24-pin.",
+            description: "Kabel daya utama 24-Pin ATX menghubungkan PSU di luar motherboard menuju soket power utama di sisi kanan motherboard.",
+            analogy: "Seperti pembuluh darah atau kabel instalasi listrik rumah yang mengalirkan daya dari sumber listrik menuju setiap ruangan.",
+            specs: "24-Pin ATX Main Power Connector"
+        }
+    };
+
+    const FALLBACK_QUIZ = [
+        {
+            id: 1,
+            question: "Komponen perangkat keras berbentuk persegi dengan pelat logam perak dan titik kontak emas yang dipasang di tengah motherboard sebagai otak pemroses perintah disebut...",
+            options: ["Random Access Memory (RAM)", "Central Processing Unit (CPU / Processor)", "Power Supply Unit (PSU)", "Solid State Drive (SSD)"],
+            answer_index: 1,
+            explanation: "Processor (CPU) dipasang pada soket tengah motherboard dan berfungsi mengolah seluruh perhitungan logika serta instruksi komputer."
+        },
+        {
+            id: 2,
+            question: "Mengapa keping Memory RAM memiliki takik (celah kunci) tidak simetris pada deretan pin emas di bagian bawahnya?",
+            options: ["Agar RAM bisa dipasang di slot VGA maupun slot SSD", "Untuk mencegah kesalahan arah pemasangan terbalik pada slot DIMM motherboard", "Sebagai tempat mengalirkan listrik 220V langsung dari stopkontak", "Agar data di dalam RAM tidak hilang saat komputer dimatikan"],
+            answer_index: 1,
+            explanation: "Takik (notch) pada pin emas RAM berfungsi sebagai pengaman fisik agar keping RAM hanya masuk ke slot DIMM dalam posisi yang benar."
+        },
+        {
+            id: 3,
+            question: "Ketika listrik tiba-tiba padam saat siswa belum menyimpan dokumen yang sedang diketik, data tersebut hilang karena sebelumnya berada di...",
+            options: ["SSD NVMe M.2 (Non-Volatile)", "Memory RAM (Volatile)", "Power Supply Unit (PSU)", "Kartu Grafis (VGA)"],
+            answer_index: 1,
+            explanation: "RAM bersifat volatile, artinya hanya menyimpan data sementara selama komputer dialiri listrik."
+        },
+        {
+            id: 4,
+            question: "Komponen ramping berbentuk papan sirkuit kecil (22x80 mm) yang dipasang mendatar pada slot M.2 motherboard untuk menyimpan Sistem Operasi Windows secara permanen adalah...",
+            options: ["VGA Card PCIe x16", "SSD NVMe M.2", "Kabel Power 24-Pin ATX", "Baterai CMOS CR2032"],
+            answer_index: 1,
+            explanation: "SSD NVMe M.2 menyimpan sistem operasi dan file pengguna secara permanen dengan kecepatan baca/tulis tinggi."
+        },
+        {
+            id: 5,
+            question: "Di manakah posisi pemasangan Power Supply Unit (PSU) yang benar saat merakit komputer desktop?",
+            options: ["Menempel langsung di atas soket prosesor motherboard", "Ditancapkan pada slot PCIe x16 di sebelah RAM", "Dipasang pada ruang dudukan PSU di luar papan motherboard, lalu dihubungkan dengan kabel daya", "Ditempelkan di bagian belakang layar monitor"],
+            answer_index: 2,
+            explanation: "PSU dipasang di ruang casing di luar area motherboard dan menyalurkan daya ke motherboard melalui kabel 24-Pin ATX."
+        },
+        {
+            id: 6,
+            question: "Apa yang terjadi jika seluruh komponen motherboard sudah terpasang, tetapi kabel 24-Pin ATX dari PSU lupa dicolokkan ke motherboard saat tombol Power ditekan?",
+            options: ["Komputer langsung masuk ke desktop Windows dengan normal", "Aliran daya listrik ke motherboard terputus sehingga komputer gagal menyala (Boot Error)", "Monitor menampilkan gambar lebih tajam", "Kipas VGA berputar dua kali lebih cepat"],
+            answer_index: 1,
+            explanation: "Tanpa kabel 24-Pin ATX yang mencolok dari PSU ke motherboard, papan sirkuit utama tidak menerima daya listrik."
+        },
+        {
+            id: 7,
+            question: "Kartu ekspansi berkipas ganda dengan konektor emas panjang yang ditancapkan pada slot PCIe x16 bertulang baja di motherboard untuk menampilkan grafis ke monitor adalah...",
+            options: ["VGA / GPU Card", "Sound Card", "Processor LGA1851", "Heatsink VRM"],
+            answer_index: 0,
+            explanation: "VGA / GPU Card mengolah pemrosesan grafis dan menghubungkan komputer ke monitor melalui port HDMI atau DisplayPort."
+        },
+        {
+            id: 8,
+            question: "Urutan siklus pemrosesan informasi dasar pada sistem komputer yang benar adalah...",
+            options: ["Output → Process → Input → Storage", "Input → Process → Output & Storage", "Storage → Output → Process → Input", "Process → Input → Storage → Output"],
+            answer_index: 1,
+            explanation: "Data dimasukkan melalui Input Device, diolah di Processing Device (CPU & RAM), lalu ditampilkan lewat Output Device atau disimpan di Storage Device."
+        }
+    ];
+
+    let CATALOG = { ...DEFAULT_CATALOG };
+    let MOTHERBOARD_META = { ...DEFAULT_MOTHERBOARD_META };
 
     const state = {
         activeTab: 'assembly',
@@ -32,10 +195,12 @@
     };
 
     // =========================================================================
-    // 1. WEB AUDIO SYNTHESIZER (KLIK MEKANIS, BEEP BIOS, & SUARA ERROR)
+    // 1. WEB AUDIO SYNTHESIZER
     // =========================================================================
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioContextClass ? new AudioContextClass() : null;
     function playTone(freq, type = 'sine', duration = 0.12, vol = 0.14, delay = 0) {
+        if (!audioCtx) return;
         try {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
@@ -51,36 +216,28 @@
         } catch (e) {}
     }
 
-    function playSnapSound() {
-        playTone(540, 'triangle', 0.08, 0.18, 0);
-        playTone(920, 'sine', 0.14, 0.16, 0.06);
-    }
-
-    function playErrorSound() {
-        playTone(185, 'sawtooth', 0.22, 0.18, 0);
-        playTone(140, 'sawtooth', 0.28, 0.18, 0.18);
-    }
-
-    function playBootBeep() {
-        playTone(1000, 'sine', 0.18, 0.16, 0.08);
-    }
+    const playSnapSound = () => { playTone(540, 'triangle', 0.08, 0.18, 0); playTone(920, 'sine', 0.14, 0.16, 0.06); };
+    const playErrorSound = () => { playTone(185, 'sawtooth', 0.22, 0.18, 0); playTone(140, 'sawtooth', 0.28, 0.18, 0.18); };
+    const playBootBeep = () => { playTone(1000, 'sine', 0.18, 0.16, 0.08); };
 
     // =========================================================================
-    // 2. INISIALISASI SCENE THREE.JS UTAMA (MEJA KAYU & TEMBOK KERJA RAPI)
+    // 2. SCENE THREE.JS UTAMA
     // =========================================================================
     const canvas = document.getElementById('three-canvas');
     const viewport = document.getElementById('viewport-wrapper');
+    const initW = Math.max(viewport.clientWidth || 960, 320);
+    const initH = Math.max(viewport.clientHeight || 580, 360);
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xdbe4ee);
     scene.fog = new THREE.FogExp2(0xdbe4ee, 0.011);
 
-    const camera = new THREE.PerspectiveCamera(42, viewport.clientWidth / viewport.clientHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(42, initW / initH, 0.1, 100);
     camera.position.set(0.4, 9.2, 11.8);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(initW, initH);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -94,7 +251,6 @@
     controls.maxDistance = 22;
     controls.target.set(0, 1.2, 0);
 
-    // Pencahayaan studio ruang kerja terang & natural
     scene.add(new THREE.AmbientLight(0xf8fafc, 0.88));
 
     const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.35);
@@ -113,20 +269,15 @@
     fillLight.position.set(-9, 8, 6);
     scene.add(fillLight);
 
-    // Tembok Ruang Kerja Rapi dengan Panel Kisi Kayu Akustik
+    // Dinding Ruang Kerja Rapi + Kisi Kayu Akustik
     const backWallRoom = new THREE.Mesh(
         new THREE.BoxGeometry(28, 13, 0.4),
-        new THREE.MeshStandardMaterial({
-            map: T.createOfficeWallTexture(),
-            roughness: 0.72,
-            metalness: 0.05
-        })
+        new THREE.MeshStandardMaterial({ map: T.createOfficeWallTexture(), roughness: 0.72, metalness: 0.05 })
     );
     backWallRoom.position.set(0, 5.6, -6.9);
     backWallRoom.receiveShadow = true;
     scene.add(backWallRoom);
 
-    // Rak Dinding Minimalis & Tanaman Hias Meja Kerja
     const wallShelf = new THREE.Mesh(
         new THREE.BoxGeometry(5.6, 0.16, 0.95),
         new THREE.MeshStandardMaterial({ color: 0x855834, roughness: 0.55 })
@@ -151,20 +302,15 @@
     plantCrown.castShadow = true;
     scene.add(plantCrown);
 
-    // Meja Kerja Kayu Natural Oak Rapi
+    // Meja Kerja Kayu Natural Oak
     const deskMesh = new THREE.Mesh(
         new THREE.BoxGeometry(24, 0.52, 13.5),
-        new THREE.MeshStandardMaterial({
-            map: T.createWoodDeskTexture(),
-            roughness: 0.42,
-            metalness: 0.08
-        })
+        new THREE.MeshStandardMaterial({ map: T.createWoodDeskTexture(), roughness: 0.42, metalness: 0.08 })
     );
     deskMesh.position.set(0, -0.26, 0);
     deskMesh.receiveShadow = true;
     scene.add(deskMesh);
 
-    // Desk Mat Abu-Abu Gelap Rapi di bawah Casing & Monitor
     const deskMat = new THREE.Mesh(
         new THREE.BoxGeometry(16.2, 0.035, 8.2),
         new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.88 })
@@ -173,9 +319,7 @@
     deskMat.receiveShadow = true;
     scene.add(deskMat);
 
-    // =========================================================================
-    // 3. CASING PC PUTIH BERMEREK ARMAGGEDDON & TOMBOL POWER 3D
-    // =========================================================================
+    // Casing Putih Merek ARMAGGEDDON
     const caseGroup = new THREE.Group();
     caseGroup.position.set(-2.4, 0.04, 0.15);
     scene.add(caseGroup);
@@ -200,7 +344,6 @@
     topBezel.castShadow = true;
     caseGroup.add(topBezel);
 
-    // Panel Depan Putih Armaggeddon + Logo & Tipografi Merek
     const frontPanel = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.44, 6.4), whiteSteelMat);
     frontPanel.position.set(3.95, 0.83, 0);
     frontPanel.castShadow = true;
@@ -208,17 +351,12 @@
 
     const brandPlate = new THREE.Mesh(
         new THREE.PlaneGeometry(5.6, 1.25),
-        new THREE.MeshStandardMaterial({
-            map: T.createArmaggeddonCaseTexture(),
-            roughness: 0.25,
-            metalness: 0.15
-        })
+        new THREE.MeshStandardMaterial({ map: T.createArmaggeddonCaseTexture(), roughness: 0.25, metalness: 0.15 })
     );
     brandPlate.rotation.y = Math.PI / 2;
     brandPlate.position.set(4.15, 0.84, -0.1);
     caseGroup.add(brandPlate);
 
-    // Bingkai trim hitam di tepi bawah casing putih
     const bottomTrim = new THREE.Mesh(new THREE.BoxGeometry(8.28, 0.12, 6.48), blackTrimMat);
     bottomTrim.position.set(0, 0.05, 0);
     caseGroup.add(bottomTrim);
@@ -236,14 +374,10 @@
         emissiveIntensity: 0.25,
         roughness: 0.2
     });
-    const powerButtonMesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.23, 0.23, 0.16, 32),
-        powerLedMat
-    );
+    const powerButtonMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.16, 32), powerLedMat);
     powerButtonMesh.position.set(3.95, 1.58, 2.25);
     caseGroup.add(powerButtonMesh);
 
-    // Ruang PSU Shroud Putih Armaggeddon
     const psuBay = new THREE.Mesh(
         new THREE.BoxGeometry(2.2, 0.18, 2.3),
         new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.35, metalness: 0.25 })
@@ -257,7 +391,7 @@
     caseGroup.add(moboGroup);
 
     // =========================================================================
-    // 4. SLOT TARGET DI MOTHERBOARD & RUANG PSU
+    // 3. SLOT TARGET MOTHERBOARD & PSU
     // =========================================================================
     const slotMeshes = {};
     const slotHighlightMeshes = {};
@@ -266,7 +400,6 @@
         const group = new THREE.Group();
         group.position.copy(pos);
         parent.add(group);
-
         if (visualBuilder) visualBuilder(group);
 
         const hitBox = new THREE.Mesh(
@@ -279,12 +412,7 @@
 
         const highlight = new THREE.Mesh(
             new THREE.BoxGeometry(size.x + 0.08, 0.14, size.z + 0.08),
-            new THREE.MeshBasicMaterial({
-                color: 0x38bdf8,
-                transparent: true,
-                opacity: 0.0,
-                depthWrite: false
-            })
+            new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.0, depthWrite: false })
         );
         highlight.position.y = 0.08;
         group.add(highlight);
@@ -371,7 +499,7 @@
     });
 
     // =========================================================================
-    // 5. MONITOR SAMSUNG TERBARU (ODYSSEY / M8 ULTRA-SLIM BEZEL)
+    // 4. MONITOR SAMSUNG TERBARU
     // =========================================================================
     const screenCanvas = document.createElement('canvas');
     screenCanvas.width = 1024;
@@ -389,7 +517,6 @@
     monitorGroup.rotation.y = -0.34;
     scene.add(monitorGroup);
 
-    // Kaki penyangga datar logam perak modern khas Samsung Odyssey / M8 terbaru
     const silverStandMat = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.88, roughness: 0.20 });
     const monBase = new THREE.Mesh(new THREE.BoxGeometry(2.25, 0.07, 1.35), silverStandMat);
     monBase.position.y = 0.035;
@@ -401,7 +528,6 @@
     monNeck.castShadow = true;
     monitorGroup.add(monNeck);
 
-    // Bodi layar tipis ultra-slim Samsung
     const monBezel = new THREE.Mesh(
         new THREE.BoxGeometry(4.95, 3.02, 0.11),
         new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.78, roughness: 0.24 })
@@ -410,14 +536,9 @@
     monBezel.castShadow = true;
     monitorGroup.add(monBezel);
 
-    // Chin bawah dengan logo SAMSUNG perak mengilap
     const samsungChin = new THREE.Mesh(
         new THREE.BoxGeometry(4.95, 0.24, 0.12),
-        new THREE.MeshStandardMaterial({
-            map: T.createSamsungBezelTexture(),
-            metalness: 0.82,
-            roughness: 0.22
-        })
+        new THREE.MeshStandardMaterial({ map: T.createSamsungBezelTexture(), metalness: 0.82, roughness: 0.22 })
     );
     samsungChin.position.set(0, 0.98, -0.14);
     monitorGroup.add(samsungChin);
@@ -431,7 +552,7 @@
     monitorGroup.add(monDisplay);
 
     // =========================================================================
-    // 6. TRAY KOMPONEN 3D REALISTIS & INTERAKSI DRAG-AND-DROP
+    // 5. LANGSUNG BANGUN SELURUH KOMPONEN 3D DI TRAY MEJA KERJA!
     // =========================================================================
     const componentMeshes = {};
     const vgaFanMeshes = [];
@@ -455,7 +576,7 @@
             cable: () => M.buildCable3D()
         };
 
-        Object.keys(CATALOG).forEach(partId => {
+        Object.keys(builders).forEach(partId => {
             const meshGroup = builders[partId]();
             meshGroup.position.copy(trayPositions[partId]);
             meshGroup.traverse(child => {
@@ -466,6 +587,11 @@
         });
     }
 
+    initComponentMeshes();
+
+    // =========================================================================
+    // 6. INTERAKSI DRAG & DROP + VALIDASI LOKAL & SERVER
+    // =========================================================================
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.45);
@@ -502,7 +628,6 @@
             triggerCasePower();
             return;
         }
-
         if (raycaster.intersectObject(monDisplay, true).length > 0 && state.bootStage === 'WINDOWS') {
             openWindowsModal();
             return;
@@ -537,11 +662,9 @@
         if (!state.draggingPart) return;
         getPointerNDC(e);
         raycaster.setFromCamera(mouse, camera);
-
         if (raycaster.ray.intersectPlane(dragPlane, dragIntersect)) {
             componentMeshes[state.draggingPart].position.set(dragIntersect.x, 1.48, dragIntersect.z);
         }
-
         const slotHits = raycaster.intersectObjects(Object.values(slotMeshes), false);
         if (slotHits.length > 0) {
             const sId = slotHits[0].object.userData.slotId;
@@ -557,18 +680,13 @@
         if (!state.draggingPart) return;
         const partId = state.draggingPart;
         const slotId = state.hoveredSlot;
-
         state.draggingPart = null;
         state.hoveredSlot = null;
         controls.enabled = true;
         renderer.domElement.style.cursor = 'grab';
         highlightSlots(false);
-
-        if (slotId) {
-            attemptInstallComponent(partId, slotId);
-        } else {
-            componentMeshes[partId].position.copy(trayPositions[partId]);
-        }
+        if (slotId) attemptInstallComponent(partId, slotId);
+        else componentMeshes[partId].position.copy(trayPositions[partId]);
     });
 
     renderer.domElement.addEventListener('dragover', (e) => {
@@ -598,24 +716,46 @@
         state.draggingPart = null;
         state.hoveredSlot = null;
         highlightSlots(false);
-        if (slotId) {
-            attemptInstallComponent(partId, slotId);
-        } else {
-            componentMeshes[partId].position.copy(trayPositions[partId]);
-        }
+        if (slotId) attemptInstallComponent(partId, slotId);
+        else componentMeshes[partId].position.copy(trayPositions[partId]);
     });
 
+    function validateDropLocally(partId, targetSlot) {
+        const comp = CATALOG[partId];
+        if (comp.requires && comp.requires.includes('psu') && !state.installed.includes('psu')) {
+            return {
+                valid: false,
+                title: 'URUTAN SALAH! Pasang PSU Terlebih Dahulu',
+                message: 'Pasang unit Power Supply (PSU) di ruang dudukan PSU terlebih dahulu sebelum mencolokkan Kabel Power ATX 24-Pin!'
+            };
+        }
+        if (targetSlot !== comp.target_slot) {
+            return {
+                valid: false,
+                title: 'SALAH SLOT / POSISI!',
+                message: `${comp.name} tidak cocok pada slot tersebut. Pasang pada: ${comp.slot_label}.`
+            };
+        }
+        return {
+            valid: true,
+            title: `Berhasil Memasang ${comp.name}!`,
+            message: `${comp.name} terpasang presisi pada ${comp.slot_label}.`
+        };
+    }
+
     async function attemptInstallComponent(partId, targetSlot) {
-        const res = await fetch('/api/validate-drop', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                component_id: partId,
-                target_slot: targetSlot,
-                installed: state.installed
-            })
-        });
-        const result = await res.json();
+        let result;
+        try {
+            const res = await fetch('/api/validate-drop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ component_id: partId, target_slot: targetSlot, installed: state.installed })
+            });
+            if (!res.ok) throw new Error('Offline mode');
+            result = await res.json();
+        } catch (err) {
+            result = validateDropLocally(partId, targetSlot);
+        }
 
         if (result.valid) {
             playSnapSound();
@@ -636,37 +776,37 @@
 
     function snapComponentToBoard3D(partId) {
         const mesh = componentMeshes[partId];
-        if (partId === 'cpu') {
-            moboGroup.add(mesh);
-            mesh.position.set(-0.2, 0.12, -0.75);
-        } else if (partId === 'ram') {
-            moboGroup.add(mesh);
-            mesh.position.set(1.35, 0.14, -0.75);
-        } else if (partId === 'ssd') {
-            moboGroup.add(mesh);
-            mesh.position.set(-0.15, 0.13, 0.35);
-        } else if (partId === 'vga') {
-            moboGroup.add(mesh);
-            mesh.position.set(-0.35, 0.22, 1.05);
-        } else if (partId === 'psu') {
-            caseGroup.add(mesh);
-            mesh.position.set(-2.7, 0.34, 1.85);
-        } else if (partId === 'cable') {
-            caseGroup.add(mesh);
-            mesh.position.set(0.75, 0.32, -0.25);
-        }
+        if (partId === 'cpu') { moboGroup.add(mesh); mesh.position.set(-0.2, 0.12, -0.75); }
+        else if (partId === 'ram') { moboGroup.add(mesh); mesh.position.set(1.35, 0.14, -0.75); }
+        else if (partId === 'ssd') { moboGroup.add(mesh); mesh.position.set(-0.15, 0.13, 0.35); }
+        else if (partId === 'vga') { moboGroup.add(mesh); mesh.position.set(-0.35, 0.22, 1.05); }
+        else if (partId === 'psu') { caseGroup.add(mesh); mesh.position.set(-2.7, 0.34, 1.85); }
+        else if (partId === 'cable') { caseGroup.add(mesh); mesh.position.set(0.75, 0.32, -0.25); }
     }
 
     async function triggerCasePower() {
         powerButtonMesh.position.y = 1.53;
         setTimeout(() => { powerButtonMesh.position.y = 1.58; }, 160);
 
-        const res = await fetch('/api/power-on', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ installed: state.installed })
-        });
-        const bootRes = await res.json();
+        let bootRes;
+        try {
+            const res = await fetch('/api/power-on', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ installed: state.installed })
+            });
+            if (!res.ok) throw new Error('Offline mode');
+            bootRes = await res.json();
+        } catch (err) {
+            const missing = Object.keys(CATALOG).filter(k => !state.installed.includes(k));
+            bootRes = missing.length === 0
+                ? { boot_success: true }
+                : {
+                    boot_success: false,
+                    error_code: 'ERR_MISSING_HARDWARE',
+                    message: `Komponen belum terpasang lengkap: ${missing.map(m => CATALOG[m].name).join(', ')}`
+                };
+        }
 
         const ledDot = document.getElementById('power-led-dot');
         const badge = document.getElementById('pc-state-badge');
@@ -706,7 +846,7 @@
         badge.className = 'text-[11px] mono px-2.5 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-700';
 
         updateMonitorScreen('BIOS');
-        showStatusBanner('success', 'PC Menyala! POST BIOS Berhasil...', 'Memuat Sistem Operasi Windows 11 di monitor...');
+        showStatusBanner('success', 'PC Menyala! POST BIOS Berhasil...', 'Memuat Sistem Operasi Windows 11 di monitor Samsung...');
         window.setCameraPreset('monitor');
 
         await saveRecordToBackend('LULUS PRAKTIKUM RAKIT PC 3D');
@@ -722,7 +862,7 @@
                     'Klik layar monitor 3D atau tombol "Buka Layar Windows Penuh" di bawah.'
                 );
             }
-        }, 1500);
+        }, 1400);
     }
 
     async function saveRecordToBackend(statusText) {
@@ -730,7 +870,8 @@
         const studentClass = document.getElementById('student-class-input').value.trim() || 'VII SMPIT Sahabat Alam';
         const duration = Math.round((Date.now() - state.startTime) / 1000);
 
-        const bodyPayload = {
+        const localRecord = {
+            timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
             student_name: studentName,
             student_class: studentClass,
             assembly_score: state.assemblyScore,
@@ -744,15 +885,22 @@
             const res = await fetch('/api/save-result', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bodyPayload)
+                body: JSON.stringify(localRecord)
             });
-            const data = await res.json();
-            if (data && data.record) {
-                const existing = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || '[]');
-                existing.push(data.record);
-                localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(existing));
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.record) {
+                    const existing = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || '[]');
+                    existing.push(data.record);
+                    localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(existing));
+                    return;
+                }
             }
         } catch (e) {}
+
+        const existing = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || '[]');
+        existing.push(localRecord);
+        localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(existing));
     }
 
     // =========================================================================
@@ -760,6 +908,7 @@
     // =========================================================================
     function renderPartsSidebar() {
         const list = document.getElementById('parts-list');
+        if (!list) return;
         list.innerHTML = '';
 
         Object.values(CATALOG).forEach(part => {
@@ -800,15 +949,17 @@
         });
 
         const checkBar = document.getElementById('checklist-bar');
-        checkBar.innerHTML = Object.values(CATALOG).map(p => {
-            const ok = state.installed.includes(p.id);
-            return `
-                <div class="px-3 py-2 rounded-xl border text-xs flex items-center justify-between ${ok ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-slate-900/80 border-slate-800 text-slate-400'}">
-                    <span class="font-semibold truncate">${p.short_name}</span>
-                    <span class="font-bold ml-1">${ok ? '✓' : '○'}</span>
-                </div>
-            `;
-        }).join('');
+        if (checkBar) {
+            checkBar.innerHTML = Object.values(CATALOG).map(p => {
+                const ok = state.installed.includes(p.id);
+                return `
+                    <div class="px-3 py-2 rounded-xl border text-xs flex items-center justify-between ${ok ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-slate-900/80 border-slate-800 text-slate-400'}">
+                        <span class="font-semibold truncate">${p.short_name}</span>
+                        <span class="font-bold ml-1">${ok ? '✓' : '○'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
     }
 
     function selectComponent(partId) {
@@ -886,13 +1037,16 @@
         const gBox = document.getElementById('gallery-viewport');
         if (!gCanvas || !gBox) return;
 
+        const gw = Math.max(gBox.clientWidth || 460, 280);
+        const gh = Math.max(gBox.clientHeight || 460, 280);
+
         galleryScene = new THREE.Scene();
-        galleryCamera = new THREE.PerspectiveCamera(40, gBox.clientWidth / gBox.clientHeight, 0.1, 50);
+        galleryCamera = new THREE.PerspectiveCamera(40, gw / gh, 0.1, 50);
         galleryCamera.position.set(2.8, 2.4, 3.6);
 
         galleryRenderer = new THREE.WebGLRenderer({ canvas: gCanvas, antialias: true, alpha: true });
-        galleryRenderer.setSize(gBox.clientWidth, gBox.clientHeight);
-        galleryRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        galleryRenderer.setSize(gw, gh);
+        galleryRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
         galleryControls = new THREE.OrbitControls(galleryCamera, galleryRenderer.domElement);
         galleryControls.enableDamping = true;
@@ -922,25 +1076,12 @@
             itemData = MOTHERBOARD_META;
         } else {
             itemData = CATALOG[itemId];
-            if (itemId === 'cpu') {
-                galleryCurrentMesh = M.buildCPU3D();
-                galleryCurrentMesh.scale.set(2.2, 2.2, 2.2);
-            } else if (itemId === 'ram') {
-                galleryCurrentMesh = M.buildRAM3D();
-                galleryCurrentMesh.scale.set(1.45, 1.45, 1.45);
-            } else if (itemId === 'ssd') {
-                galleryCurrentMesh = M.buildSSD3D();
-                galleryCurrentMesh.scale.set(1.85, 1.85, 1.85);
-            } else if (itemId === 'vga') {
-                galleryCurrentMesh = M.buildVGA3D(null);
-                galleryCurrentMesh.scale.set(0.95, 0.95, 0.95);
-            } else if (itemId === 'psu') {
-                galleryCurrentMesh = M.buildPSU3D();
-                galleryCurrentMesh.scale.set(1.15, 1.15, 1.15);
-            } else if (itemId === 'cable') {
-                galleryCurrentMesh = M.buildCable3D();
-                galleryCurrentMesh.scale.set(0.55, 0.55, 0.55);
-            }
+            if (itemId === 'cpu') { galleryCurrentMesh = M.buildCPU3D(); galleryCurrentMesh.scale.set(2.2, 2.2, 2.2); }
+            else if (itemId === 'ram') { galleryCurrentMesh = M.buildRAM3D(); galleryCurrentMesh.scale.set(1.45, 1.45, 1.45); }
+            else if (itemId === 'ssd') { galleryCurrentMesh = M.buildSSD3D(); galleryCurrentMesh.scale.set(1.85, 1.85, 1.85); }
+            else if (itemId === 'vga') { galleryCurrentMesh = M.buildVGA3D(null); galleryCurrentMesh.scale.set(0.95, 0.95, 0.95); }
+            else if (itemId === 'psu') { galleryCurrentMesh = M.buildPSU3D(); galleryCurrentMesh.scale.set(1.15, 1.15, 1.15); }
+            else if (itemId === 'cable') { galleryCurrentMesh = M.buildCable3D(); galleryCurrentMesh.scale.set(0.55, 0.55, 0.55); }
         }
 
         galleryScene.add(galleryCurrentMesh);
@@ -961,13 +1102,11 @@
     // =========================================================================
     // 9. KUIS EVALUASI INTERAKTIF (TAB 3) & DASHBOARD GURU (TAB 4)
     // =========================================================================
-    let quizData = [];
+    let quizData = [...FALLBACK_QUIZ];
 
-    async function loadQuizQuestions() {
-        const res = await fetch('/api/quiz');
-        const data = await res.json();
-        quizData = data.questions || [];
+    function renderQuizUI() {
         const container = document.getElementById('quiz-questions-container');
+        if (!container) return;
         container.innerHTML = quizData.map((q, idx) => `
             <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 space-y-2.5">
                 <p class="text-sm font-bold text-white">${idx + 1}. ${q.question}</p>
@@ -984,6 +1123,43 @@
         `).join('');
     }
 
+    async function loadQuizQuestions() {
+        renderQuizUI();
+        try {
+            const res = await fetch('/api/quiz');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.questions && data.questions.length > 0) {
+                    quizData = data.questions;
+                    renderQuizUI();
+                }
+            }
+        } catch (e) {}
+    }
+
+    function gradeQuizLocally(answers) {
+        let correctCount = 0;
+        const details = FALLBACK_QUIZ.map(q => {
+            const userChoice = answers[String(q.id)] !== undefined ? answers[String(q.id)] : -1;
+            const isCorrect = userChoice === q.answer_index;
+            if (isCorrect) correctCount++;
+            return {
+                id: q.id,
+                is_correct: isCorrect,
+                correct_text: q.options[q.answer_index],
+                explanation: q.explanation
+            };
+        });
+        const score = Math.round((correctCount / FALLBACK_QUIZ.length) * 100);
+        return {
+            score,
+            correct_count: correctCount,
+            total_questions: FALLBACK_QUIZ.length,
+            passed: score >= 75,
+            details
+        };
+    }
+
     window.submitQuizAnswers = async function () {
         const answers = {};
         quizData.forEach(q => {
@@ -991,12 +1167,19 @@
             if (checked) answers[String(q.id)] = parseInt(checked.value, 10);
         });
 
-        const res = await fetch('/api/quiz/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers })
-        });
-        const result = await res.json();
+        let result;
+        try {
+            const res = await fetch('/api/quiz/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answers })
+            });
+            if (!res.ok) throw new Error('Offline mode');
+            result = await res.json();
+        } catch (err) {
+            result = gradeQuizLocally(answers);
+        }
+
         state.quizScore = result.score;
 
         const summaryBox = document.getElementById('quiz-result-summary');
@@ -1019,10 +1202,16 @@
     };
 
     async function loadTeacherRecords() {
-        const res = await fetch('/api/teacher/records');
-        const data = await res.json();
         const tbody = document.getElementById('teacher-records-body');
-        const serverRecords = data.records || [];
+        let serverRecords = [];
+        try {
+            const res = await fetch('/api/teacher/records');
+            if (res.ok) {
+                const data = await res.json();
+                serverRecords = data.records || [];
+            }
+        } catch (e) {}
+
         const localRecords = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || '[]');
         const records = serverRecords.length >= localRecords.length ? serverRecords : localRecords;
 
@@ -1037,7 +1226,7 @@
                 <td class="py-2.5 px-3 font-bold text-white">${r.student_name}</td>
                 <td class="py-2.5 px-3 text-slate-300">${r.student_class}</td>
                 <td class="py-2.5 px-3 mono font-bold text-sky-400">${r.assembly_score}</td>
-                <td class="py-2.5 px-3 mono font-bold text-emerald-400">${r.quiz_score !== null ? r.quiz_score : '-'}</td>
+                <td class="py-2.5 px-3 mono font-bold text-emerald-400">${r.quiz_score !== null && r.quiz_score !== undefined ? r.quiz_score : '-'}</td>
                 <td class="py-2.5 px-3 mono text-rose-400">${r.errors_count}</td>
                 <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">${r.status}</span></td>
             </tr>
@@ -1061,9 +1250,11 @@
             setTimeout(() => {
                 const gBox = document.getElementById('gallery-viewport');
                 if (gBox && galleryRenderer) {
-                    galleryCamera.aspect = gBox.clientWidth / gBox.clientHeight;
+                    const gw = Math.max(gBox.clientWidth || 460, 280);
+                    const gh = Math.max(gBox.clientHeight || 460, 280);
+                    galleryCamera.aspect = gw / gh;
                     galleryCamera.updateProjectionMatrix();
-                    galleryRenderer.setSize(gBox.clientWidth, gBox.clientHeight);
+                    galleryRenderer.setSize(gw, gh);
                 }
             }, 60);
         } else if (tabName === 'teacher') {
@@ -1072,16 +1263,9 @@
     };
 
     window.setCameraPreset = function (preset) {
-        if (preset === 'overview') {
-            camera.position.set(0.4, 9.2, 11.8);
-            controls.target.set(0, 1.2, 0);
-        } else if (preset === 'motherboard') {
-            camera.position.set(-1.6, 6.2, 4.2);
-            controls.target.set(-1.65, 0.4, -0.05);
-        } else if (preset === 'monitor') {
-            camera.position.set(3.2, 3.2, 5.2);
-            controls.target.set(4.55, 2.2, -0.35);
-        }
+        if (preset === 'overview') { camera.position.set(0.4, 9.2, 11.8); controls.target.set(0, 1.2, 0); }
+        else if (preset === 'motherboard') { camera.position.set(-1.6, 6.2, 4.2); controls.target.set(-1.65, 0.4, -0.05); }
+        else if (preset === 'monitor') { camera.position.set(3.2, 3.2, 5.2); controls.target.set(4.55, 2.2, -0.35); }
         controls.update();
     };
 
@@ -1151,7 +1335,7 @@
     };
 
     // =========================================================================
-    // 11. ANIMATION LOOP & BOOTSTRAP
+    // 11. ANIMATION LOOP, RESIZE OBSERVER, & BOOTSTRAP
     // =========================================================================
     let clockTime = 0;
     function animate() {
@@ -1179,26 +1363,38 @@
         }
     }
 
-    window.addEventListener('resize', () => {
-        if (viewport) {
-            camera.aspect = viewport.clientWidth / viewport.clientHeight;
+    function resizeViewport() {
+        if (!viewport) return;
+        const w = viewport.clientWidth;
+        const h = viewport.clientHeight;
+        if (w > 0 && h > 0) {
+            camera.aspect = w / h;
             camera.updateProjectionMatrix();
-            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            renderer.setSize(w, h);
         }
-    });
-
-    async function bootstrap() {
-        const res = await fetch('/api/components');
-        const data = await res.json();
-        CATALOG = data.catalog;
-        MOTHERBOARD_META = data.motherboard;
-
-        initComponentMeshes();
-        renderPartsSidebar();
-        updateHUD();
-        loadQuizQuestions();
-        animate();
     }
 
-    bootstrap();
+    window.addEventListener('resize', resizeViewport);
+    if (window.ResizeObserver && viewport) {
+        new ResizeObserver(resizeViewport).observe(viewport);
+    }
+
+    // Render segera tanpa menunggu backend
+    renderPartsSidebar();
+    updateHUD();
+    loadQuizQuestions();
+    animate();
+
+    // Sinkronisasi opsional dengan backend Python jika server aktif
+    (async function syncCatalogWithBackend() {
+        try {
+            const res = await fetch('/api/components');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.catalog) CATALOG = data.catalog;
+                if (data.motherboard) MOTHERBOARD_META = data.motherboard;
+                renderPartsSidebar();
+            }
+        } catch (e) {}
+    })();
 })();
