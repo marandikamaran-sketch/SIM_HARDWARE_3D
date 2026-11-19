@@ -7,21 +7,21 @@ serta penjelasan pedagogis dan analogi untuk siswa kelas VII SMP/MTs.
 
 MOTHERBOARD_INFO = {
     "id": "motherboard",
-    "name": "Motherboard ATX Z790-PRO",
-    "subtitle": "Papan Sirkuit Utama (Mainboard) • Socket LGA1700",
+    "name": "Motherboard ATX Z890-PRO",
+    "subtitle": "Papan Sirkuit Utama (Mainboard) • Socket LGA1851",
     "category": "Processing & Interconnect Hub",
     "physical_appearance": "Papan PCB fiberglass hijau-gelap/hitam berukuran persegi panjang dengan jalur sirkuit tembaga keemasan, kapasitor silinder perak, heatsink aluminium, soket CPU berpenutup logam, slot RAM memanjang, slot M.2, dan slot VGA bertulang baja.",
     "description": "Motherboard adalah papan sirkuit utama tempat seluruh komponen komputer (Processor, RAM, SSD M.2, VGA, dan kabel daya PSU) terhubung dan saling berkomunikasi.",
     "analogy": "Seperti jalan raya dan tata kota yang menghubungkan pusat pemerintahan (CPU), meja kerja (RAM), gudang arsip (SSD), dan pembangkit listrik (PSU).",
-    "specs": "Form Factor ATX • Socket LGA1700 • 4x Slot DDR4 DIMM • Slot M.2 NVMe • PCIe 4.0 x16 • ATX 24-Pin"
+    "specs": "Form Factor ATX • Socket LGA1851 • 4x Slot DDR4 DIMM • Slot M.2 NVMe • PCIe 4.0 x16 • ATX 24-Pin"
 }
 
 HARDWARE_CATALOG = {
     "cpu": {
         "id": "cpu",
         "name": "Processor (CPU)",
-        "short_name": "CPU Intel i7",
-        "subtitle": "Intel Core i7-13700K • Socket LGA1700",
+        "short_name": "CPU Intel Ultra 9",
+        "subtitle": "Intel Core Ultra 9 285K • Socket LGA1851",
         "category": "Processing Device (Perangkat Pemroses)",
         "target_slot": "slot_cpu",
         "slot_label": "Soket Processor (LGA1700) di Tengah Motherboard",
@@ -30,19 +30,19 @@ HARDWARE_CATALOG = {
         "physical_appearance": "Keping persegi berukuran ±4,5 cm dengan papan sirkuit hijau di tepi, pelat logam nikel perak mengilap (IHS) bertuliskan seri prosesor, bagian bawah dipenuhi titik kontak emas, serta tanda segitiga emas di salah satu sudut.",
         "description": "Central Processing Unit (CPU) adalah otak utama komputer yang mengeksekusi instruksi program dan melakukan perhitungan aritmetika serta logika. Dipasang tepat pada soket prosesor di tengah motherboard.",
         "analogy": "Seperti otak manusia atau koki utama di dapur yang mengolah semua perintah dari pengguna.",
-        "specs": "16 Core (8P+8E) • 24 Thread • Boost 5.40 GHz • Cache 30 MB • Socket LGA1700"
+        "specs": "16 Core (8P+8E) • 24 Thread • Boost 5.40 GHz • Cache 30 MB • Socket LGA1851"
     },
     "ram": {
         "id": "ram",
         "name": "Memory RAM 16GB",
         "short_name": "RAM DDR4 16GB",
-        "subtitle": "DDR4 3200MHz Dual-Channel Heatsink",
+        "subtitle": "DDR5 5600MHz Green PCB Asli (2x8GB)",
         "category": "Processing / Volatile Memory",
         "target_slot": "slot_ram",
         "slot_label": "Slot RAM (DIMM DDR4) di Samping Soket CPU",
         "order_hint": 2,
         "requires": [],
-        "physical_appearance": "Keping memori pipih memanjang (±13,3 cm) dengan deretan pin konektor berwarna emas di bagian bawah yang memiliki takik (celah kunci) tidak simetris, serta pelindung heatsink aluminium hitam-merah di bagian atas.",
+        "physical_appearance": "Keping papan sirkuit (PCB) berwarna hijau asli standar industri dengan deretan chip memori IC hitam berjejer, stiker spesifikasi putih, serta deretan pin konektor emas di bagian bawah yang memiliki takik (celah kunci) tidak simetris.",
         "description": "Random Access Memory (RAM) berfungsi menyimpan data dan program yang sedang aktif dijalankan secara sementara. Data pada RAM akan hilang saat listrik padam (bersifat volatile).",
         "analogy": "Seperti meja kerja tempat menaruh buku dan alat tulis yang sedang dipakai belajar; semakin luas mejanya, semakin banyak aplikasi bisa dibuka bersamaan.",
         "specs": "16 GB (2x8 GB) DDR4 • Kecepatan 3200 MT/s • 288-Pin Gold Finger"
@@ -65,14 +65,14 @@ HARDWARE_CATALOG = {
     "vga": {
         "id": "vga",
         "name": "VGA / GPU Card",
-        "short_name": "VGA RTX Dual-Fan",
-        "subtitle": "NVIDIA GeForce RTX 8GB GDDR6",
+        "short_name": "VGA NVIDIA RTX 5090",
+        "subtitle": "NVIDIA GeForce RTX 5090 • 32GB GDDR7",
         "category": "Processing / Graphics Output",
         "target_slot": "slot_vga",
         "slot_label": "Slot VGA (PCIe x16 Bertulang Baja) di Motherboard",
         "order_hint": 4,
         "requires": [],
-        "physical_appearance": "Kartu ekspansi besar berbentuk balok dengan dua kipas pendingin hitam di bagian depan, sirip heatsink aluminium dan pipa tembaga di tengah, konektor emas PCIe x16 di bawah, serta port HDMI/DisplayPort di braket besi belakang.",
+        "physical_appearance": "Kartu grafis NVIDIA GeForce RTX 5090 berdesain rangka logam gunmetal dengan dua kipas pendingin axial-tech besar, sirip heatsink aluminium padat, pipa pendingin tembaga, logo GEFORCE RTX menyala hijau, dan konektor emas PCIe 5.0 x16.",
         "description": "Video Graphics Array (VGA) atau Graphics Processing Unit (GPU) bertugas mengolah data grafis dan mengirimkan sinyal tampilan visual ke layar monitor.",
         "analogy": "Seperti pelukis dan desainer khusus yang menggambar seluruh tampilan layar, animasi, dan video agar tampil tajam di monitor.",
         "specs": "8 GB GDDR6 • Interface PCIe 4.0 x16 • Dual Axial Fan • HDMI 2.1 & DisplayPort"

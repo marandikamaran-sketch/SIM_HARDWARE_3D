@@ -3,7 +3,7 @@
  * REALISTIC 3D HARDWARE BUILDER (static/js/models_3d.js)
  * Membangun model 3D komponen komputer menyerupai bentuk & warna aslinya:
  * - RAM PCB Hijau Asli lengkap dengan chip memori IC hitam & pin emas bertakik
- * - Processor Intel Core Ultra / i9 dengan IHS berlekuk & matriks kontak emas
+ * - Processor Intel Core Ultra 9 dengan IHS berlekuk & matriks kontak emas
  * - VGA NVIDIA GeForce RTX 5090 dengan dual-fan, heatsink bersirip, & logo RTX
  * ============================================================================
  */
@@ -106,14 +106,9 @@ window.HardwareModels3D = (function () {
         return moboGroup;
     }
 
-    /**
-     * Processor (CPU) Realistis: Substrat PCB hijau multi-lapis, IHS logam berlekuk,
-     * dan kontak pin emas presisi.
-     */
     function buildCPU3D() {
         const g = new THREE.Group();
 
-        // Substrat PCB hijau tua khas prosesor
         const greenPCB = new THREE.Mesh(
             new THREE.BoxGeometry(1.02, 0.055, 0.94),
             new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.35, metalness: 0.15 })
@@ -121,7 +116,6 @@ window.HardwareModels3D = (function () {
         greenPCB.castShadow = true;
         g.add(greenPCB);
 
-        // Matriks kontak emas di bagian bawah
         const goldContact = new THREE.Mesh(
             new THREE.BoxGeometry(0.94, 0.02, 0.86),
             new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.96, roughness: 0.16 })
@@ -129,7 +123,6 @@ window.HardwareModels3D = (function () {
         goldContact.position.y = -0.026;
         g.add(goldContact);
 
-        // Pelat Integrated Heat Spreader (IHS) utama
         const ihsMat = new THREE.MeshStandardMaterial({
             map: T.createCPUIHSTexture(),
             metalness: 0.88,
@@ -140,7 +133,6 @@ window.HardwareModels3D = (function () {
         ihsMain.castShadow = true;
         g.add(ihsMain);
 
-        // Kuping pengunci (retaining notches/ears) di kiri-kanan IHS
         const earMat = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.90, roughness: 0.20 });
         const earBar = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.048, 0.26), earMat);
         earBar.position.y = 0.048;
@@ -149,11 +141,6 @@ window.HardwareModels3D = (function () {
         return g;
     }
 
-    /**
-     * Memory RAM Bentuk Asli Hijau (Bare Green PCB DIMM):
-     * Keping PCB hijau dengan 8 chip memori IC hitam di kedua sisi, kapasitor SMD,
-     * stiker putih spesifikasi, dan deretan pin emas dengan celah takik (notch).
-     */
     function buildRAM3D() {
         const g = new THREE.Group();
         const greenPcbTex = T.createGreenRAMPCBTexture();
@@ -162,7 +149,6 @@ window.HardwareModels3D = (function () {
             const stick = new THREE.Group();
             stick.position.x = offsetX;
 
-            // Papan PCB hijau asli (ramping & proporsional seperti keping DIMM sungguhan)
             const pcbMat = new THREE.MeshStandardMaterial({
                 map: greenPcbTex,
                 roughness: 0.36,
@@ -173,7 +159,6 @@ window.HardwareModels3D = (function () {
             pcbBoard.castShadow = true;
             stick.add(pcbBoard);
 
-            // Deretan pin konektor emas (gold fingers) dipisahkan takik kunci (key notch)
             const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.96, roughness: 0.16 });
             const pinsFront = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.08, 1.08), goldMat);
             pinsFront.position.set(0, 0.05, -0.49);
@@ -183,11 +168,9 @@ window.HardwareModels3D = (function () {
             pinsBack.position.set(0, 0.05, 0.58);
             stick.add(pinsBack);
 
-            // 8 Chip Memori IC Hitam (DRAM FBGA Packages) di sisi kiri & kanan papan hijau
             const chipMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.42, metalness: 0.25 });
             const chipZPositions = [-0.84, -0.60, -0.36, -0.12, 0.12, 0.36, 0.60, 0.84];
             chipZPositions.forEach(zPos => {
-                // Skip bagian tengah agar stiker putih terlihat jelas
                 if (Math.abs(zPos) < 0.26) return;
                 [-0.025, 0.025].forEach(sideX => {
                     const icChip = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.22, 0.15), chipMat);
@@ -196,7 +179,6 @@ window.HardwareModels3D = (function () {
                 });
             });
 
-            // Chip PMIC (Power Management IC) kecil di bagian tengah atas
             const pmicChip = new THREE.Mesh(new THREE.BoxGeometry(0.056, 0.11, 0.11), chipMat);
             pmicChip.position.set(0, 0.49, 0);
             stick.add(pmicChip);
@@ -238,15 +220,9 @@ window.HardwareModels3D = (function () {
         return g;
     }
 
-    /**
-     * VGA / GPU Card NVIDIA GeForce RTX 5090 Founders Edition Style:
-     * Rangka logam gunmetal, sirip heatsink padat, pipa tembaga, logo GEFORCE RTX hijau-putih,
-     * konektor daya 16-pin, dan kipas ganda 11-bilah axial-tech.
-     */
     function buildVGA3D(fanMeshesOut) {
         const g = new THREE.Group();
 
-        // Backplate & PCB hitam presisi
         const pcb = new THREE.Mesh(
             new THREE.BoxGeometry(3.25, 0.08, 1.38),
             new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.35, metalness: 0.3 })
@@ -254,7 +230,6 @@ window.HardwareModels3D = (function () {
         pcb.position.y = 0.16;
         g.add(pcb);
 
-        // Sirip Heatsink Aluminium Padat
         const heatsinkCore = new THREE.Mesh(
             new THREE.BoxGeometry(3.05, 0.28, 1.24),
             new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.90, roughness: 0.22 })
@@ -262,7 +237,6 @@ window.HardwareModels3D = (function () {
         heatsinkCore.position.y = 0.34;
         g.add(heatsinkCore);
 
-        // Pipa pendingin tembaga (Copper Heatpipes)
         [-0.58, 0.58].forEach(zPipe => {
             const copperPipe = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.04, 0.04, 2.95, 16),
@@ -273,7 +247,6 @@ window.HardwareModels3D = (function () {
             g.add(copperPipe);
         });
 
-        // Shroud luar NVIDIA GeForce RTX bertekstur logam gunmetal + logo GEFORCE RTX
         const shroudMat = new THREE.MeshStandardMaterial({
             map: T.createNvidiaVGAShroudTexture(),
             metalness: 0.82,
@@ -284,7 +257,6 @@ window.HardwareModels3D = (function () {
         shroud.castShadow = true;
         g.add(shroud);
 
-        // Aksen LED menyala bertuliskan GEFORCE RTX di sisi depan kartu
         const rtxGlowBar = new THREE.Mesh(
             new THREE.BoxGeometry(1.15, 0.07, 0.03),
             new THREE.MeshStandardMaterial({
@@ -297,7 +269,6 @@ window.HardwareModels3D = (function () {
         rtxGlowBar.position.set(0, 0.58, 0.71);
         g.add(rtxGlowBar);
 
-        // Konektor daya 16-Pin (12V-2x6) di tepi atas
         const power16Pin = new THREE.Mesh(
             new THREE.BoxGeometry(0.32, 0.14, 0.18),
             new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 })
@@ -305,7 +276,6 @@ window.HardwareModels3D = (function () {
         power16Pin.position.set(0.35, 0.64, 0.56);
         g.add(power16Pin);
 
-        // Braket I/O baja di sisi belakang
         const rearBracket = new THREE.Mesh(
             new THREE.BoxGeometry(0.08, 0.90, 1.42),
             new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.92, roughness: 0.18 })
@@ -313,7 +283,6 @@ window.HardwareModels3D = (function () {
         rearBracket.position.set(-1.66, 0.34, 0);
         g.add(rearBracket);
 
-        // Konektor emas PCIe 5.0 x16
         const pciePins = new THREE.Mesh(
             new THREE.BoxGeometry(2.18, 0.14, 0.07),
             new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.95, roughness: 0.16 })
@@ -321,7 +290,6 @@ window.HardwareModels3D = (function () {
         pciePins.position.set(-0.24, 0.06, -0.36);
         g.add(pciePins);
 
-        // Dua Kipas Besar Axial-Tech Khas NVIDIA RTX
         [-0.86, 0.86].forEach(fx => {
             const fanRing = new THREE.Mesh(
                 new THREE.TorusGeometry(0.54, 0.035, 12, 32),

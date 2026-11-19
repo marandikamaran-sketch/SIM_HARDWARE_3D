@@ -104,7 +104,6 @@ window.HardwareTextures = (function () {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 512, 512);
 
-        // Tekstur brushed nickel halus
         ctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
         ctx.lineWidth = 1;
         for (let y = 0; y < 512; y += 3) {
@@ -129,7 +128,6 @@ window.HardwareTextures = (function () {
         ctx.fillText('SRL42 • LGA1851', 256, 265);
         ctx.fillText('SMPIT SAHABAT ALAM', 256, 315);
 
-        // Segitiga penanda orientasi pin
         ctx.fillStyle = '#eab308';
         ctx.beginPath();
         ctx.moveTo(34, 478);
@@ -143,36 +141,30 @@ window.HardwareTextures = (function () {
         return tex;
     }
 
-    /**
-     * Tekstur RAM PCB Hijau Asli (Bare Green Circuit Board + Jalur Tembaga + Label Putih)
-     */
     function createGreenRAMPCBTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
         c.height = 256;
         const ctx = c.getContext('2d');
 
-        // Warna hijau PCB asli standar industri memori
         const pcbGrad = ctx.createLinearGradient(0, 0, 0, 256);
-        pcbGrad.addColorStop(0, '#15803d');
-        pcbGrad.addColorStop(0.5, '#166534');
+        pcbGrad.addColorStop(0, '#16a34a');
+        pcbGrad.addColorStop(0.5, '#15803d');
         pcbGrad.addColorStop(1, '#14532d');
         ctx.fillStyle = pcbGrad;
         ctx.fillRect(0, 0, 1024, 256);
 
-        // Jalur sirkuit tembaga halus di balik solder mask hijau
-        ctx.strokeStyle = 'rgba(74, 222, 128, 0.25)';
+        ctx.strokeStyle = 'rgba(134, 239, 172, 0.30)';
         ctx.lineWidth = 2;
         for (let i = 16; i < 1008; i += 14) {
             ctx.beginPath();
-            ctx.moveTo(i, 220);
+            ctx.moveTo(i, 224);
             ctx.lineTo(i, 175);
             ctx.lineTo(i + 8, 155);
-            ctx.lineTo(i + 8, 35);
+            ctx.lineTo(i + 8, 32);
             ctx.stroke();
         }
 
-        // Lubang mounting & titik vias emas
         ctx.fillStyle = '#facc15';
         [36, 512, 988].forEach(vx => {
             ctx.beginPath();
@@ -185,7 +177,6 @@ window.HardwareTextures = (function () {
             ctx.fillStyle = '#facc15';
         });
 
-        // Stiker label spesifikasi memori putih di tengah keping hijau
         ctx.fillStyle = '#f8fafc';
         ctx.fillRect(365, 58, 294, 96);
         ctx.strokeStyle = '#cbd5e1';
@@ -206,16 +197,12 @@ window.HardwareTextures = (function () {
         return tex;
     }
 
-    /**
-     * Tekstur Shroud VGA NVIDIA GeForce RTX Terbaru (RTX 5090 Style)
-     */
     function createNvidiaVGAShroudTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
         c.height = 384;
         const ctx = c.getContext('2d');
 
-        // Rangka logam gunmetal gelap-titanium khas Founders Edition
         const grad = ctx.createLinearGradient(0, 0, 1024, 384);
         grad.addColorStop(0, '#1e293b');
         grad.addColorStop(0.5, '#334155');
@@ -223,8 +210,7 @@ window.HardwareTextures = (function () {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 1024, 384);
 
-        // Garis desain X-frame khas NVIDIA Founders Edition
-        ctx.strokeStyle = '#64748b';
+        ctx.strokeStyle = '#94a3b8';
         ctx.lineWidth = 10;
         ctx.beginPath();
         ctx.moveTo(430, 18);
@@ -233,79 +219,68 @@ window.HardwareTextures = (function () {
         ctx.lineTo(430, 366);
         ctx.stroke();
 
-        // Aksen hijau khas NVIDIA
         ctx.fillStyle = '#76b900';
-        ctx.fillRect(425, 174, 174, 36);
+        ctx.fillRect(420, 172, 184, 38);
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 22px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('GEFORCE RTX', 512, 199);
+        ctx.fillText('GEFORCE RTX', 512, 198);
 
-        ctx.fillStyle = '#cbd5e1';
-        ctx.font = 'bold 16px monospace';
-        ctx.fillText('RTX 5090 • 32GB GDDR7', 512, 348);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 17px monospace';
+        ctx.fillText('NVIDIA RTX 5090 • 32GB GDDR7', 512, 350);
 
         const tex = new THREE.CanvasTexture(c);
         tex.anisotropy = 8;
         return tex;
     }
 
-    /**
-     * Tekstur Logo & Branding Casing Putih ARMAGGEDDON
-     */
     function createArmaggeddonCaseTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
         c.height = 256;
         const ctx = c.getContext('2d');
 
-        // Dasar putih bersih powder-coated
         ctx.fillStyle = '#f8fafc';
         ctx.fillRect(0, 0, 1024, 256);
 
-        // Garis aksen futuristik hitam & biru-es
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.moveTo(0, 215);
-        ctx.lineTo(680, 215);
-        ctx.lineTo(720, 256);
+        ctx.moveTo(0, 212);
+        ctx.lineTo(720, 212);
+        ctx.lineTo(760, 256);
         ctx.lineTo(0, 256);
         ctx.closePath();
         ctx.fill();
 
         ctx.fillStyle = '#0284c7';
-        ctx.fillRect(48, 52, 14, 118);
+        ctx.fillRect(44, 48, 16, 124);
 
-        // Ikon geometris Armaggeddon
         ctx.strokeStyle = '#0f172a';
-        ctx.lineWidth = 8;
+        ctx.lineWidth = 9;
         ctx.beginPath();
-        ctx.moveTo(92, 152);
-        ctx.lineTo(132, 62);
-        ctx.lineTo(172, 152);
-        ctx.moveTo(108, 122);
-        ctx.lineTo(156, 122);
+        ctx.moveTo(92, 156);
+        ctx.lineTo(134, 58);
+        ctx.lineTo(176, 156);
+        ctx.moveTo(108, 124);
+        ctx.lineTo(160, 124);
         ctx.stroke();
 
-        // Tipografi merek ARMAGGEDDON
         ctx.fillStyle = '#0f172a';
-        ctx.font = '900 54px sans-serif';
+        ctx.font = '900 58px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('ARMAGGEDDON', 202, 124);
+        ctx.fillText('ARMAGGEDDON', 206, 126);
 
-        ctx.fillStyle = '#475569';
+        ctx.fillStyle = '#334155';
         ctx.font = 'bold 22px monospace';
-        ctx.fillText('NIMITZ TR8000 • TEMPERED GLASS WHITE EDITION', 205, 164);
+        ctx.fillText('NIMITZ TR8000 • WHITE EDITION ATX', 208, 168);
 
         const tex = new THREE.CanvasTexture(c);
         tex.anisotropy = 8;
         return tex;
     }
 
-    /**
-     * Tekstur Bezel Bawah Monitor SAMSUNG Terbaru
-     */
     function createSamsungBezelTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
@@ -320,30 +295,27 @@ window.HardwareTextures = (function () {
         ctx.fillRect(0, 0, 1024, 96);
 
         ctx.fillStyle = '#f8fafc';
-        ctx.font = 'bold 34px sans-serif';
+        ctx.font = 'bold 36px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('S A M S U N G', 512, 58);
+        ctx.fillText('S A M S U N G', 512, 60);
 
         const tex = new THREE.CanvasTexture(c);
         tex.anisotropy = 8;
         return tex;
     }
 
-    /**
-     * Tekstur Meja Kerja Serat Kayu Natural Oak Realistis
-     */
     function createWoodDeskTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
         c.height = 1024;
         const ctx = c.getContext('2d');
 
-        ctx.fillStyle = '#b07d4f';
+        ctx.fillStyle = '#b68354';
         ctx.fillRect(0, 0, 1024, 1024);
 
         for (let y = 0; y < 1024; y += 2) {
             const wave = Math.sin(y * 0.03) * 14;
-            ctx.strokeStyle = y % 6 === 0 ? 'rgba(92, 56, 24, 0.22)' : 'rgba(222, 184, 135, 0.14)';
+            ctx.strokeStyle = y % 6 === 0 ? 'rgba(92, 56, 24, 0.22)' : 'rgba(222, 184, 135, 0.15)';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(0, y);
@@ -359,16 +331,12 @@ window.HardwareTextures = (function () {
         return tex;
     }
 
-    /**
-     * Tekstur Dinding Kerja Rapi dengan Panel Kisi Kayu Akustik (Wood Slat Wall)
-     */
     function createOfficeWallTexture() {
         const c = document.createElement('canvas');
         c.width = 1024;
         c.height = 512;
         const ctx = c.getContext('2d');
 
-        // Cat dinding putih-hangat bersih (warm off-white)
         ctx.fillStyle = '#eef2f6';
         ctx.fillRect(0, 0, 1024, 512);
 
@@ -385,7 +353,7 @@ window.HardwareTextures = (function () {
             ctx.fillRect(x, 0, 14, 512);
         }
 
-        // Bingkai papan informasi laboratorium TIK di sisi kiri dinding
+        // Papan panduan laboratorium TIK rapi di sisi kiri dinding
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(58, 95, 165, 220);
         ctx.strokeStyle = '#cbd5e1';
@@ -492,7 +460,7 @@ window.HardwareTextures = (function () {
             ctx.fillRect(0, 0, w, h);
 
             ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 22px monospace';
+            ctx.font = 'bold 21px monospace';
             ctx.textAlign = 'center';
             ctx.fillText('SAMSUNG ODYSSEY • NO SIGNAL (TEKAN POWER CASING)', w / 2, h / 2);
         } else if (mode === 'BIOS') {
