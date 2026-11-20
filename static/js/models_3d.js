@@ -131,20 +131,57 @@ window.HardwareModels3D = (function () {
         }
         addSilkText('CPU_PWR 8-PIN', -2.28, -1.75, 0.78, 0.12);
 
-        // Soket LGA1700: alas hitam, contact bed rapat, ILM logam dan tuas.
-        addBox(-0.20, 0.105, -0.75, 1.18, 0.075, 1.18, mat.socket);
-        addBox(-0.20, 0.149, -0.75, 1.04, 0.035, 1.04, mat.blackSoft);
-        const pinOffsets = [];
-        for (let row = 0; row < 30; row++) for (let col = 0; col < 30; col++) {
-            pinOffsets.push([-0.63 + col * 0.0297, 0.174, -1.18 + row * 0.0297]);
+        // Soket LGA1700: carrier berbentuk persegi panjang, bidang kontak,
+        // retention frame metal, engsel dan tuas pengunci. Dimensi dibuat
+        // proporsional terhadap package CPU 1.04 x 0.90 tanpa mengubah pusat slot.
+        addBox(-0.20, 0.105, -0.75, 1.24, 0.085, 1.10, mat.socket);
+        addBox(-0.20, 0.151, -0.75, 1.105, 0.024, 0.985, mat.blackSoft);
+        // Insulator/contact bed gelap agar spring contact emas terlihat terpisah.
+        addBox(-0.20, 0.166, -0.75, 0.91, 0.012, 0.84, mat.black);
+
+        // LGA spring contacts: pin mikro miring, bukan titik silinder tegak.
+        // Geometri digabung menjadi dua mesh untuk menjaga performa layar sentuh.
+        const pinOffsetsA = [], pinOffsetsB = [];
+        for (let row = 0; row < 30; row++) {
+            for (let col = 0; col < 32; col++) {
+                const x = -0.6185 + col * 0.027;
+                const z = -1.1415 + row * 0.027;
+                ((row + col) % 2 === 0 ? pinOffsetsA : pinOffsetsB).push([x, 0.178, z]);
+            }
         }
-        const socketPins = new THREE.Mesh(mergeTranslatedGeometry(new THREE.CylinderGeometry(0.0055, 0.0055, 0.010, 6), pinOffsets), mat.goldBright);
-        socketPins.userData.partId = 'motherboard'; g.add(socketPins);
-        // ILM four-sided load frame, hinge, load plate and retention lever.
-        [[-0.20,0.184,-1.31,1.23,0.070,0.075],[-0.20,0.184,-0.19,1.23,0.070,0.075],[-0.82,0.184,-0.75,0.075,0.070,1.12],[0.42,0.184,-0.75,0.075,0.070,1.12]].forEach(a => addBox(a[0],a[1],a[2],a[3],a[4],a[5],mat.nickel));
-        // Ruang tengah dibiarkan terbuka agar pin LGA terlihat saat CPU belum dipasang.
-        addBox(0.48, 0.205, -0.75, 0.035, 0.055, 0.92, mat.alloy);
-        addBox(0.515, 0.205, -0.31, 0.20, 0.045, 0.055, mat.nickel);
+        const springA = new THREE.CylinderGeometry(0.0032, 0.0048, 0.022, 5);
+        springA.rotateX(0.48);
+        const springB = new THREE.CylinderGeometry(0.0032, 0.0048, 0.022, 5);
+        springB.rotateX(-0.48);
+        const contactsA = new THREE.Mesh(mergeTranslatedGeometry(springA, pinOffsetsA), mat.goldBright);
+        const contactsB = new THREE.Mesh(mergeTranslatedGeometry(springB, pinOffsetsB), mat.gold);
+        contactsA.userData.partId = 'motherboard'; contactsB.userData.partId = 'motherboard';
+        g.add(contactsA, contactsB);
+
+        // Retention frame LGA1700 berwarna nickel. Bagian tengah dibiarkan
+        // terbuka ketika CPU dilepas sehingga contact array dapat dipelajari.
+        addBox(-0.20, 0.198, -1.325, 1.31, 0.066, 0.060, mat.nickel);
+        addBox(-0.20, 0.198, -0.175, 1.31, 0.066, 0.060, mat.nickel);
+        addBox(-0.855, 0.198, -0.75, 0.060, 0.066, 1.09, mat.nickel);
+        addBox(0.455, 0.198, -0.75, 0.060, 0.066, 1.09, mat.nickel);
+        // Lapisan bibir hitam di bawah frame untuk memisahkan metal dari PCB.
+        addBox(-0.20, 0.166, -1.292, 1.22, 0.025, 0.035, mat.blackSoft);
+        addBox(-0.20, 0.166, -0.208, 1.22, 0.025, 0.035, mat.blackSoft);
+        addBox(-0.826, 0.166, -0.75, 0.035, 0.025, 1.05, mat.blackSoft);
+        addBox(0.426, 0.166, -0.75, 0.035, 0.025, 1.05, mat.blackSoft);
+
+        // Engsel load plate di sisi atas dan tuas baja di sisi kanan.
+        const hinge = addCylinder(-0.80, 0.218, -1.325, 0.034, 0.22, mat.darkAlloy, 'motherboard', 18);
+        hinge.rotation.x = Math.PI / 2;
+        addCylinder(-0.80, 0.218, -1.325, 0.018, 0.228, mat.nickel, 'motherboard', 16).rotation.x = Math.PI / 2;
+        addBox(0.505, 0.226, -0.75, 0.052, 0.035, 0.83, mat.nickel);
+        addBox(0.595, 0.231, -0.345, 0.20, 0.040, 0.060, mat.nickel);
+        addBox(0.675, 0.232, -0.345, 0.045, 0.044, 0.074, mat.blackSoft);
+        // Dua titik pivot dan sekrup kecil pada sudut frame.
+        [[-0.79,-1.29],[0.39,-1.29],[-0.79,-0.21],[0.39,-0.21]].forEach(([x,z]) => {
+            addCylinder(x, 0.235, z, 0.024, 0.012, mat.darkAlloy, 'motherboard', 12);
+            addBox(x, 0.242, z, 0.021, 0.004, 0.004, mat.nickel);
+        });
         addSilkText('LGA1700', -0.20, -1.43, 0.65, 0.12);
 
         // Empat slot DIMM DDR4. Tiap slot memiliki channel, kontak, key notch,
@@ -321,9 +358,95 @@ window.HardwareModels3D = (function () {
     }
 
 
-    function buildRAM3D() {
-        // Kit dual-channel: dua modul DDR4 UDIMM 8 GB. Ukuran dan orientasi
-        // dijaga kompatibel dengan posisi slot DIMM pada motherboard di main.js.
+
+    function buildCPUCooler3D(fanMeshesOut) {
+        // Pendingin udara CPU model top-down: cold plate, tumpukan sirip aluminium,
+        // rangka kipas 120 mm, rotor tujuh bilah, hub, klip, dan empat sekrup.
+        const g = new THREE.Group();
+        const nickel = new THREE.MeshStandardMaterial({ color: 0xb9c4cb, metalness: 0.88, roughness: 0.24 });
+        const aluminium = new THREE.MeshStandardMaterial({ color: 0x8998a4, metalness: 0.91, roughness: 0.27 });
+        const finMat = new THREE.MeshStandardMaterial({ color: 0xaab5bc, metalness: 0.88, roughness: 0.31 });
+        const copper = new THREE.MeshStandardMaterial({ color: 0xb86e3c, metalness: 0.92, roughness: 0.22 });
+        const black = new THREE.MeshStandardMaterial({ color: 0x151c24, metalness: 0.48, roughness: 0.30 });
+        const bladeMat = new THREE.MeshStandardMaterial({ color: 0x202a34, metalness: 0.42, roughness: 0.29, side: THREE.DoubleSide });
+        const screwMat = new THREE.MeshStandardMaterial({ color: 0x74818b, metalness: 0.94, roughness: 0.2 });
+
+        // Mounting plate/cold plate duduk tepat di atas IHS processor.
+        const coldPlate = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.075, 0.82), nickel);
+        coldPlate.position.set(0, 0.210, 0);
+        coldPlate.castShadow = true; coldPlate.receiveShadow = true; coldPlate.userData.partId = 'cpuCooler'; g.add(coldPlate);
+        const thermalContact = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.012, 0.68), copper);
+        thermalContact.position.set(0, 0.166, 0); thermalContact.userData.partId = 'cpuCooler'; g.add(thermalContact);
+
+        // Sirip heatsink radial berlapis, terlihat dari sisi kipas.
+        for (let i = 0; i < 12; i++) {
+            const y = 0.31 + i * 0.034;
+            const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.48 - i * 0.0015, 0.48 - i * 0.0015, 0.018, 48), finMat);
+            fin.position.y = y; fin.castShadow = true; fin.receiveShadow = true; fin.userData.partId = 'cpuCooler'; g.add(fin);
+        }
+        // Empat heatpipe tembaga yang naik dari cold plate ke sirip pendingin.
+        [-0.25, -0.08, 0.08, 0.25].forEach((x, i) => {
+            const points = [
+                new THREE.Vector3(x * 0.72, 0.25, 0.28),
+                new THREE.Vector3(x, 0.40, 0.23),
+                new THREE.Vector3(x, 0.66, 0.15),
+                new THREE.Vector3(x * 0.72, 0.70, 0.08)
+            ];
+            const pipe = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 20, 0.025, 8, false), copper);
+            pipe.castShadow = true; pipe.userData.partId = 'cpuCooler'; g.add(pipe);
+        });
+
+        // Rangka kipas persegi dan penyangga anti-getar.
+        const frameY = 0.78;
+        const frameBars = [
+            [0, frameY, -0.46, 0.98, 0.10, 0.10], [0, frameY, 0.46, 0.98, 0.10, 0.10],
+            [-0.46, frameY, 0, 0.10, 0.10, 0.82], [0.46, frameY, 0, 0.10, 0.10, 0.82]
+        ];
+        frameBars.forEach(([x,y,z,w,h,d]) => {
+            const bar = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), black);
+            bar.position.set(x,y,z); bar.castShadow = true; bar.userData.partId = 'cpuCooler'; g.add(bar);
+        });
+        const rotor = new THREE.Group(); rotor.position.set(0, 0.845, 0); rotor.userData.partId = 'cpuCooler';
+        const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.135, 0.10, 32), black); hub.castShadow = true; rotor.add(hub);
+        const hubCap = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.108, 32), nickel); hubCap.position.y = 0.008; rotor.add(hubCap);
+        const hubDot = new THREE.Mesh(new THREE.CylinderGeometry(0.027, 0.027, 0.112, 20), copper); hubDot.position.y = 0.012; rotor.add(hubDot);
+        for (let b = 0; b < 7; b++) {
+            const shape = new THREE.Shape();
+            shape.moveTo(0.105, -0.045);
+            shape.bezierCurveTo(0.18, -0.13, 0.32, -0.17, 0.405, -0.055);
+            shape.bezierCurveTo(0.34, 0.035, 0.22, 0.105, 0.115, 0.075);
+            shape.closePath();
+            const blade = new THREE.Mesh(new THREE.ShapeGeometry(shape, 10), bladeMat);
+            blade.rotation.x = -Math.PI / 2;
+            blade.rotation.y = b * Math.PI * 2 / 7;
+            blade.position.y = 0.012;
+            rotor.add(blade);
+        }
+        g.add(rotor);
+        if (fanMeshesOut) fanMeshesOut.push(rotor);
+
+        // Kisi pelindung dan empat baut sudut.
+        const guardMat = new THREE.MeshStandardMaterial({ color: 0x65717b, metalness: 0.88, roughness: 0.25 });
+        [0.17, 0.31, 0.445].forEach(r => {
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.009, 6, 48), guardMat);
+            ring.rotation.x = Math.PI / 2; ring.position.y = 0.91; g.add(ring);
+        });
+        for (let a = 0; a < 4; a++) {
+            const angle = a * Math.PI / 2 + Math.PI / 4;
+            const screw = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.025, 12), screwMat);
+            screw.position.set(Math.cos(angle) * 0.41, 0.91, Math.sin(angle) * 0.41); g.add(screw);
+        }
+        const badge = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.012, 0.12), black);
+        badge.position.set(0, 0.918, -0.29); g.add(badge);
+
+        g.userData.partId = 'cpuCooler';
+        return g;
+    }
+
+    function buildRAM3D(singleModule = false) {
+        // Setiap keping RAM yang dipakai pada praktik dibuat sebagai objek terpisah.
+        // Mode default legacy tetap dapat membuat dua keping untuk penggunaan galeri lama;
+        // mode singleModule dipakai pada tray, pemasangan, galeri, dan ekspor GLB.
         const g = new THREE.Group();
         const pcbTexture = T.createGreenRAMPCBTexture();
         if (THREE.SRGBColorSpace) pcbTexture.colorSpace = THREE.SRGBColorSpace;
@@ -481,10 +604,14 @@ window.HardwareModels3D = (function () {
             g.add(stick);
         }
 
-        // Kedua keping 8 GB mengikuti dua jalur dual-channel pada motherboard.
-        // Pasangan dual-channel ditempatkan pada posisi DIMM A2 dan B2.
-        createModule(-0.18);
-        createModule(0.54);
+        // Mode tray memakai satu modul agar siswa dapat memasang RAM satu per satu.
+        // Tanpa argumen, galeri tetap menampilkan sepasang modul dual-channel.
+        if (singleModule) {
+            createModule(0);
+        } else {
+            createModule(-0.18);
+            createModule(0.54);
+        }
         g.userData.partId = 'ram';
         return g;
     }
@@ -772,38 +899,92 @@ window.HardwareModels3D = (function () {
 
 
     function buildCable3D() {
+        // Kabel ATX 24-pin: ujung PSU berada di soket modular PSU dan ujung utama
+        // diarahkan tepat ke header ATX 24-pin pada tepi motherboard.
+        // Group origin saat terpasang adalah titik tengah rute kabel.
         const g = new THREE.Group();
-
-        const atxColors = [0xfacc15, 0xdc2626, 0xf97316, 0x111827, 0xfacc15];
-        for (let i = 0; i < atxColors.length; i++) {
-            const offset = (i - 2) * 0.065;
-            const curve = new THREE.CatmullRomCurve3([
-                new THREE.Vector3(-4.15, 0.58, 2.05 + offset),
-                new THREE.Vector3(-3.15, 1.42, 1.15 + offset),
-                new THREE.Vector3(-0.35, 1.58, 0.15 + offset),
-                new THREE.Vector3(1.85, 0.55, -0.58 + offset)
-            ]);
-            const tube = new THREE.Mesh(
-                new THREE.TubeGeometry(curve, 36, 0.032, 8, false),
-                new THREE.MeshStandardMaterial({ color: atxColors[i], roughness: 0.42, metalness: 0.15 })
+        const wireColors = [
+            0xf2c230, 0xe34b42, 0xf28a32, 0x161b22, 0x161b22, 0x2f75b9,
+            0x4d9a61, 0xeeeeea, 0xf2c230, 0xe34b42, 0xf28a32, 0x161b22,
+            0x161b22, 0x2f75b9, 0x4d9a61, 0xeeeeea, 0xf2c230, 0xe34b42,
+            0xf28a32, 0x161b22, 0x161b22, 0x2f75b9, 0x4d9a61, 0xeeeeea
+        ];
+        const start = new THREE.Vector3(-3.08, 0.17, 0.70);
+        const routePoints = [
+            start.clone().add(new THREE.Vector3(0, 0, -0.12)),
+            new THREE.Vector3(-2.92, 0.42, 0.24),
+            new THREE.Vector3(-2.30, 0.48, -0.34),
+            new THREE.Vector3(-1.20, 0.42, -0.82),
+            new THREE.Vector3(0.05, 0.27, -1.02),
+            new THREE.Vector3(1.35, 0.08, -0.94),
+            new THREE.Vector3(2.45, -0.08, -0.79),
+            new THREE.Vector3(3.28, -0.16, -0.695)
+        ];
+        // Dua puluh empat konduktor halus mengikuti satu jalur harness yang sama.
+        for (let i = 0; i < wireColors.length; i++) {
+            const row = Math.floor(i / 6) - 1.5;
+            const col = (i % 6) - 2.5;
+            const offsetY = row * 0.014;
+            const offsetZ = col * 0.014;
+            const pts = routePoints.map((p, index) => new THREE.Vector3(
+                p.x,
+                p.y + offsetY * (index / (routePoints.length - 1)),
+                p.z + offsetZ * (index / (routePoints.length - 1))
+            ));
+            const wire = new THREE.Mesh(
+                new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 42, 0.012, 6, false),
+                new THREE.MeshStandardMaterial({ color: wireColors[i], roughness: 0.43, metalness: 0.08 })
             );
-            tube.castShadow = true;
-            g.add(tube);
+            wire.castShadow = true; wire.userData.partId = 'cable'; g.add(wire);
         }
 
-        const connector24 = new THREE.Mesh(
-            new THREE.BoxGeometry(0.32, 0.28, 1.24),
-            new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.38 })
-        );
-        connector24.position.set(1.85, 0.45, -0.58);
-        g.add(connector24);
+        const black = new THREE.MeshStandardMaterial({ color: 0x0b1118, roughness: 0.34, metalness: 0.22 });
+        const latchMat = new THREE.MeshStandardMaterial({ color: 0x202a34, roughness: 0.35, metalness: 0.48 });
+        const gold = new THREE.MeshStandardMaterial({ color: 0xd3ad55, roughness: 0.2, metalness: 0.92 });
 
+        // Konektor modular PSU 12-pin di titik awal kabel, tepat pada port PSU.
+        const psuPlug = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.31, 0.22), black);
+        psuPlug.position.set(-3.08, 0.17, 0.79); psuPlug.castShadow = true; psuPlug.userData.partId = 'cable'; g.add(psuPlug);
+        const psuFace = new THREE.Mesh(new THREE.BoxGeometry(0.39, 0.25, 0.018), latchMat);
+        psuFace.position.set(-3.08, 0.17, 0.675); psuFace.userData.partId = 'cable'; g.add(psuFace);
+        for (let i = 0; i < 12; i++) {
+            const x = -3.08 + ((i % 3) - 1) * 0.105;
+            const y = 0.17 + (Math.floor(i / 3) - 1.5) * 0.052;
+            const contact = new THREE.Mesh(new THREE.BoxGeometry(0.050, 0.032, 0.009), gold);
+            contact.position.set(x, y, 0.663); contact.userData.partId = 'cable'; g.add(contact);
+        }
+        const psuStrainRelief = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.26, 0.15), black);
+        psuStrainRelief.position.set(-3.08, 0.17, 0.54); g.add(psuStrainRelief);
+
+        // Kepala 24-pin ATX: posisi case-group (3.48, 0.67, -0.60).
+        // Muka konektor menghadap -X dan masuk ke soket board pada x=3.23.
+        const plugCenter = new THREE.Vector3(3.08, -0.17, -0.695);
+        const plug = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.38, 1.30), black);
+        plug.position.copy(plugCenter); plug.castShadow = true; plug.userData.partId = 'cable'; g.add(plug);
+        const face = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.31, 1.19), latchMat);
+        face.position.set(plugCenter.x - 0.258, plugCenter.y, plugCenter.z); face.userData.partId = 'cable'; g.add(face);
+        // Dua baris, masing-masing 12 lubang kontak yang searah dengan soket motherboard.
+        for (let row = 0; row < 2; row++) {
+            for (let col = 0; col < 12; col++) {
+                const hole = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.058, 0.060), black);
+                hole.position.set(plugCenter.x - 0.270, plugCenter.y + (row ? 0.095 : -0.095), plugCenter.z - 0.5225 + col * 0.095);
+                hole.userData.partId = 'cable'; g.add(hole);
+            }
+        }
+        // Pengunci kait di punggung konektor.
+        const latch = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.065, 0.24), latchMat);
+        latch.position.set(plugCenter.x + 0.12, plugCenter.y + 0.215, plugCenter.z); latch.userData.partId = 'cable'; g.add(latch);
+        const strain = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.30, 1.12), black);
+        strain.position.set(plugCenter.x + 0.30, plugCenter.y, plugCenter.z); g.add(strain);
+
+        g.userData.partId = 'cable';
         return g;
     }
 
     return {
         buildMotherboardAssembly,
         buildCPU3D,
+        buildCPUCooler3D,
         buildRAM3D,
         buildSSD3D,
         buildVGA3D,

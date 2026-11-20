@@ -41,20 +41,50 @@
             analogy: "Seperti otak manusia atau koki utama di dapur yang mengolah semua perintah dari pengguna.",
             specs: "24 Core (8P+16E) • 32 Thread • Boost 6.00 GHz • Cache 36 MB • Socket LGA1700"
         },
-        ram: {
-            id: "ram",
-            name: "Memory RAM DDR4 16GB Kit",
-            short_name: "RAM DDR4 16GB Kit (2x8GB)",
-            subtitle: "DDR4 3200MHz Green PCB Asli (2x8GB)",
-            category: "Processing / Volatile Memory",
-            target_slot: "slot_ram",
-            slot_label: "Slot RAM (DIMM DDR4) di Samping Soket CPU",
+        cpuCooler: {
+            id: "cpuCooler",
+            name: "Kipas & Heatsink Processor",
+            short_name: "CPU Cooler 120mm",
+            subtitle: "Pendingin udara CPU • kipas 120 mm + heatsink",
+            category: "Cooling Device (Pendingin Processor)",
+            target_slot: "slot_cpu_cooler",
+            slot_label: "Dudukan pendingin tepat di atas Processor",
             order_hint: 2,
-            requires: [],
-            physical_appearance: "Keping papan sirkuit (PCB) berwarna hijau asli standar industri dengan deretan chip memori IC hitam berjejer, stiker spesifikasi putih, serta deretan pin konektor emas di bagian bawah yang memiliki takik (celah kunci) tidak simetris.",
-            description: "Random Access Memory (RAM) berfungsi menyimpan data dan program yang sedang aktif dijalankan secara sementara. Data pada RAM akan hilang saat listrik padam (bersifat volatile).",
-            analogy: "Seperti meja kerja tempat menaruh buku dan alat tulis yang sedang dipakai belajar; semakin luas mejanya, semakin banyak aplikasi bisa dibuka bersamaan.",
-            specs: "16 GB (2x8 GB) DDR4 • Kecepatan 3200 MT/s • 288-Pin Gold Finger"
+            requires: ["cpu"],
+            physical_appearance: "Pendingin CPU terpisah dengan cold plate logam, heatpipe tembaga, tumpukan sirip aluminium, rangka kipas 120 mm, rotor bilah, hub tengah, dan empat titik pengunci.",
+            description: "Kipas dan heatsink membantu membuang panas dari processor. Komponen ini dipasang setelah processor berada pada soketnya.",
+            analogy: "Seperti kipas dan radiator yang membantu mesin tetap berada pada suhu kerja yang aman.",
+            specs: "Air Cooler • Fan 120 mm • Heatpipe tembaga • Heatsink aluminium"
+        },
+        ram1: {
+            id: "ram1",
+            name: "RAM DDR4 8GB — Slot A2",
+            short_name: "RAM 8GB • A2",
+            subtitle: "Keping pertama • pasang satu per satu",
+            category: "Memory (Memori Sementara)",
+            target_slot: "slot_ram_a2",
+            slot_label: "Slot DIMM A2 (slot kedua dari arah processor)",
+            order_hint: 3,
+            requires: ["cpu", "cpuCooler"],
+            physical_appearance: "Satu keping modul DDR4 UDIMM dengan PCB hijau gelap, chip DRAM hitam pada kedua sisi, komponen SMD, jalur sirkuit, dan kontak emas 288-pin dengan takik pengunci.",
+            description: "RAM menyimpan data sementara yang sedang dipakai komputer. Keping pertama dipasang secara individual pada slot A2.",
+            analogy: "Seperti meja belajar pertama untuk meletakkan buku dan alat yang sedang digunakan.",
+            specs: "8 GB • DDR4 • 3200 MT/s • 288-pin UDIMM"
+        },
+        ram2: {
+            id: "ram2",
+            name: "RAM DDR4 8GB — Slot B2",
+            short_name: "RAM 8GB • B2",
+            subtitle: "Keping kedua • pasang setelah RAM pertama",
+            category: "Memory (Memori Sementara)",
+            target_slot: "slot_ram_b2",
+            slot_label: "Slot DIMM B2 (slot keempat dari arah processor)",
+            order_hint: 4,
+            requires: ["cpu", "cpuCooler", "ram1"],
+            physical_appearance: "Satu keping modul DDR4 UDIMM dengan PCB hijau gelap, chip DRAM hitam pada kedua sisi, komponen SMD, jalur sirkuit, dan kontak emas 288-pin dengan takik pengunci.",
+            description: "Keping RAM kedua melengkapi pasangan memori 2 × 8 GB. Pasang satu per satu pada slot B2 untuk konfigurasi dual-channel pada contoh motherboard ini.",
+            analogy: "Seperti menambahkan meja kerja kedua agar ruang belajar lebih luas.",
+            specs: "8 GB • DDR4 • 3200 MT/s • 288-pin UDIMM"
         },
         ssd: {
             id: "ssd",
@@ -64,7 +94,7 @@
             category: "Storage Device (Perangkat Penyimpanan)",
             target_slot: "slot_ssd",
             slot_label: "Slot M.2 NVMe di Permukaan Motherboard",
-            order_hint: 3,
+            order_hint: 5,
             requires: [],
             physical_appearance: "Modul M.2 2280 sepanjang 80 mm dengan PCB hijau gelap, chip controller NVMe, beberapa paket NAND Flash hitam, komponen SMD, kontak emas M-Key, serta lubang baut pengunci di ujungnya.",
             description: "Solid State Drive (SSD) NVMe M.2 adalah media penyimpanan data berkecepatan tinggi berbasis chip semikonduktor untuk menyimpan Sistem Operasi Windows, aplikasi, dan dokumen secara permanen.",
@@ -79,7 +109,7 @@
             category: "Processing / Graphics Output",
             target_slot: "slot_vga",
             slot_label: "Slot VGA (PCIe x16 Bertulang Baja) di Motherboard",
-            order_hint: 4,
+            order_hint: 6,
             requires: [],
             physical_appearance: "Kartu grafis kelas tinggi dengan shroud logam gunmetal, tiga kipas pendingin aksial, heatsink aluminium bersirip rapat, heatpipe tembaga, pelat belakang, konektor PCIe x16 berlapis emas, dan soket daya tambahan 16-pin.",
             description: "Video Graphics Array (VGA) atau Graphics Processing Unit (GPU) bertugas mengolah data grafis dan mengirimkan sinyal tampilan visual ke layar monitor.",
@@ -94,7 +124,7 @@
             category: "Power Supply Unit (Luar Motherboard)",
             target_slot: "slot_psu",
             slot_label: "Ruang Dudukan PSU di Luar Area Motherboard",
-            order_hint: 5,
+            order_hint: 7,
             requires: [],
             physical_appearance: "Kotak baja ATX hitam dengan kisi kipas 120 mm di bagian atas, label tabel tegangan di sisi casing, panel konektor modular, soket AC IEC, dan sakelar rocker I/O pada panel belakang.",
             description: "Power Supply Unit (PSU) dipasang di ruang khusus pada casing di luar area motherboard. PSU mengubah arus listrik bolak-balik (AC 220V) dari stopkontak menjadi arus searah (DC +12V, +5V, +3.3V).",
@@ -109,7 +139,7 @@
             category: "Power Distribution Cable",
             target_slot: "slot_cable",
             slot_label: "Port Power 24-Pin ATX di Tepi Kanan Motherboard",
-            order_hint: 6,
+            order_hint: 8,
             requires: ["psu"],
             physical_appearance: "Berkas kabel listrik dengan warna standar ATX (kuning +12V, merah +5V, oranye +3.3V, hitam ground) yang keluar dari unit PSU dan berakhir pada kepala konektor plastik 24-pin.",
             description: "Kabel daya utama 24-Pin ATX menghubungkan PSU di luar motherboard menuju soket power utama di sisi kanan motherboard.",
@@ -233,7 +263,7 @@
     scene.fog = new THREE.FogExp2(0xdbe4ee, 0.011);
 
     const camera = new THREE.PerspectiveCamera(42, initW / initH, 0.1, 100);
-    camera.position.set(0.4, 9.2, 11.8);
+    camera.position.set(0.4, 13.2, 18.3);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(initW, initH);
@@ -248,8 +278,8 @@
     controls.dampingFactor = 0.06;
     controls.maxPolarAngle = Math.PI * 0.48;
     controls.minDistance = 4.2;
-    controls.maxDistance = 22;
-    controls.target.set(0, 1.2, 0);
+    controls.maxDistance = 26;
+    controls.target.set(0.5, 0.9, 1.9);
 
     scene.add(new THREE.AmbientLight(0xf8fafc, 0.88));
 
@@ -318,6 +348,35 @@
     deskMat.position.set(0.5, 0.018, -0.1);
     deskMat.receiveShadow = true;
     scene.add(deskMat);
+
+    // Area tray komponen terpisah di depan casing. Semua komponen yang belum
+    // dipasang ditata di atas platform ini, bukan di dalam ruang casing.
+    const componentTray = new THREE.Mesh(
+        new THREE.BoxGeometry(20.8, 0.06, 3.30),
+        new THREE.MeshStandardMaterial({ color: 0x263544, roughness: 0.72, metalness: 0.22 })
+    );
+    componentTray.position.set(0.75, 0.03, 5.00); // permukaan atas y = 0.06
+    componentTray.receiveShadow = true;
+    componentTray.castShadow = true;
+    scene.add(componentTray);
+
+    const trayEdgeMat = new THREE.MeshStandardMaterial({ color: 0x647789, roughness: 0.38, metalness: 0.58 });
+    const trayAccentMat = new THREE.MeshStandardMaterial({ color: 0x1e9ac2, emissive: 0x07516b, emissiveIntensity: 0.18, roughness: 0.3 });
+    // Bingkai halus mengelilingi area penyimpanan komponen.
+    [
+        [0.75, 0.071, 3.37, 20.8, 0.022, 0.035],
+        [0.75, 0.071, 6.63, 20.8, 0.022, 0.035],
+        [-9.63, 0.071, 5.00, 0.035, 0.022, 3.30],
+        [11.13, 0.071, 5.00, 0.035, 0.022, 3.30]
+    ].forEach(([x, y, z, w, h, d]) => {
+        const edge = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), trayEdgeMat);
+        edge.position.set(x, y, z); scene.add(edge);
+    });
+    const trayHeader = new THREE.Mesh(
+        new THREE.BoxGeometry(4.2, 0.018, 0.12), trayAccentMat
+    );
+    trayHeader.position.set(-7.2, 0.073, 3.49);
+    scene.add(trayHeader);
 
     // Casing Putih Merek ARMAGGEDDON
     const caseGroup = new THREE.Group();
@@ -420,7 +479,11 @@
     }
 
     createTargetSlot('slot_cpu', moboGroup, new THREE.Vector3(-0.2, 0.08, -0.75), new THREE.Vector3(1.25, 0.55, 1.25), null);
-    createTargetSlot('slot_ram', moboGroup, new THREE.Vector3(1.35, 0.12, -0.75), new THREE.Vector3(1.35, 0.72, 2.35), null);
+    // Dua target RAM individual: A2 dan B2 sesuai posisi slot fisik motherboard.
+    createTargetSlot('slot_ram_a2', moboGroup, new THREE.Vector3(1.17, 0.12, -0.75), new THREE.Vector3(0.32, 0.72, 2.35), null);
+    createTargetSlot('slot_ram_b2', moboGroup, new THREE.Vector3(1.89, 0.12, -0.75), new THREE.Vector3(0.32, 0.72, 2.35), null);
+    // Target pendingin berada di atas CPU; batas bawahnya terpisah dari hitbox soket CPU.
+    createTargetSlot('slot_cpu_cooler', moboGroup, new THREE.Vector3(-0.2, 0.81, -0.75), new THREE.Vector3(1.38, 0.90, 1.38), null);
     createTargetSlot('slot_ssd', moboGroup, new THREE.Vector3(-0.15, 0.09, 0.35), new THREE.Vector3(1.65, 0.45, 0.65), null);
     createTargetSlot('slot_vga', moboGroup, new THREE.Vector3(-0.35, 0.12, 1.05), new THREE.Vector3(2.85, 0.85, 0.78), null);
     createTargetSlot('slot_psu', caseGroup, new THREE.Vector3(-2.7, 0.35, 1.85), new THREE.Vector3(2.2, 1.15, 2.2), null);
@@ -484,20 +547,35 @@
     // =========================================================================
     const componentMeshes = {};
     const vgaFanMeshes = [];
+    const cpuFanMeshes = [];
 
+    // Koordinat pusat visual setiap komponen di meja (bukan di dalam casing).
+    // RAM dimiringkan 90 derajat saat di tray agar berbaring rata; X origin
+    // ditambah 0.40 karena pusat PCB berada pada Y lokal sekitar 0.40.
     const trayPositions = {
-        cpu: new THREE.Vector3(-5.2, 0.15, 4.35),
-        ram: new THREE.Vector3(-3.3, 0.15, 4.35),
-        ssd: new THREE.Vector3(-1.3, 0.15, 4.35),
-        vga: new THREE.Vector3(1.2, 0.15, 4.35),
-        psu: new THREE.Vector3(3.8, 0.15, 4.35),
-        cable: new THREE.Vector3(6.0, 0.15, 4.35)
+        // Baris depan: CPU, RAM satuan, SSD, dan pendingin CPU.
+        cpu:       new THREE.Vector3(-6.70, 0.055, 4.55),
+        ram1:      new THREE.Vector3(-4.30, 0.136, 4.55), // pusat visual X = -4.70
+        ram2:      new THREE.Vector3(-2.25, 0.136, 4.55), // pusat visual X = -2.65
+        ssd:       new THREE.Vector3(-0.20, 0.060, 4.55),
+        cpuCooler: new THREE.Vector3( 2.20,-0.094, 4.55),
+        // Baris belakang: kartu grafis, PSU, dan kabel daya.
+        vga:       new THREE.Vector3( 4.20, 0.010, 5.85),
+        psu:       new THREE.Vector3( 7.40, 0.060, 5.72),
+        cable:     new THREE.Vector3( 9.80, 0.121, 5.72)
+    };
+
+    const trayRotations = {
+        ram1: new THREE.Euler(0, 0, Math.PI / 2),
+        ram2: new THREE.Euler(0, 0, Math.PI / 2)
     };
 
     function initComponentMeshes() {
         const builders = {
             cpu: () => M.buildCPU3D(),
-            ram: () => M.buildRAM3D(),
+            cpuCooler: () => M.buildCPUCooler3D(cpuFanMeshes),
+            ram1: () => M.buildRAM3D(true),
+            ram2: () => M.buildRAM3D(true),
             ssd: () => M.buildSSD3D(),
             vga: () => M.buildVGA3D(vgaFanMeshes),
             psu: () => M.buildPSU3D(),
@@ -507,6 +585,8 @@
         Object.keys(builders).forEach(partId => {
             const meshGroup = builders[partId]();
             meshGroup.position.copy(trayPositions[partId]);
+            if (trayRotations[partId]) meshGroup.rotation.copy(trayRotations[partId]);
+            if (partId === 'cable') meshGroup.scale.setScalar(0.38); // harness ringkas saat berada di tray
             meshGroup.traverse(child => {
                 child.userData.partId = partId;
             });
@@ -588,7 +668,10 @@
         }
     });
 
-    renderer.domElement.addEventListener('pointermove', (e) => {
+    // Pointer global membuat kartu komponen di sidebar dapat diseret dengan
+    // mouse, jari, atau stylus ke viewport 3D tanpa HTML5 native drag yang
+    // sering tidak konsisten pada layar sentuh.
+    window.addEventListener('pointermove', (e) => {
         if (!state.draggingPart) return;
         getPointerNDC(e);
         raycaster.setFromCamera(mouse, camera);
@@ -628,7 +711,17 @@
         else componentMeshes[partId].position.copy(trayPositions[partId]);
     }
     window.addEventListener('pointerup', finishComponentDrag);
-    window.addEventListener('pointercancel', () => finishComponentDrag(null));
+    window.addEventListener('pointercancel', () => {
+        if (!state.draggingPart) return;
+        const partId = state.draggingPart;
+        state.draggingPart = null;
+        state.hoveredSlot = null;
+        state.dragPointerId = null;
+        controls.enabled = true;
+        renderer.domElement.style.cursor = 'grab';
+        highlightSlots(false);
+        if (componentMeshes[partId] && trayPositions[partId]) componentMeshes[partId].position.copy(trayPositions[partId]);
+    });
 
     renderer.domElement.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -663,11 +756,13 @@
 
     function validateDropLocally(partId, targetSlot) {
         const comp = CATALOG[partId];
-        if (comp.requires && comp.requires.includes('psu') && !state.installed.includes('psu')) {
+        const missingRequirements = (comp.requires || []).filter(req => !state.installed.includes(req));
+        if (missingRequirements.length) {
+            const names = missingRequirements.map(req => CATALOG[req]?.name || req).join(' dan ');
             return {
                 valid: false,
-                title: 'URUTAN SALAH! Pasang PSU Terlebih Dahulu',
-                message: 'Pasang unit Power Supply (PSU) di ruang dudukan PSU terlebih dahulu sebelum mencolokkan Kabel Power ATX 24-Pin!'
+                title: 'Urutan pemasangan belum tepat',
+                message: `Pasang ${names} terlebih dahulu sebelum memasang ${comp.name}.`
             };
         }
         if (targetSlot !== comp.target_slot) {
@@ -702,7 +797,15 @@
             playSnapSound();
             state.installed.push(partId);
             snapComponentToBoard3D(partId);
-            showStatusBanner('success', result.title, result.message);
+            let installedMessage = result.message;
+            if (partId === 'cpu') {
+                installedMessage += ' Sekarang ambil kipas dan heatsink CPU dari daftar komponen, lalu pasang secara terpisah di atas processor.';
+            } else if (partId === 'cpuCooler') {
+                installedMessage += ' Kipas CPU kini terpasang. Saat komputer dinyalakan, baling-baling akan berputar.';
+            } else if (partId === 'ram1') {
+                installedMessage += ' Bagus! Ambil keping RAM kedua dan pasang ke slot B2.';
+            }
+            showStatusBanner('success', result.title, installedMessage);
         } else {
             playErrorSound();
             state.errorsCount += 1;
@@ -717,12 +820,21 @@
 
     function snapComponentToBoard3D(partId) {
         const mesh = componentMeshes[partId];
-        if (partId === 'cpu') { moboGroup.add(mesh); mesh.position.set(-0.2, 0.12, -0.75); }
-        else if (partId === 'ram') { moboGroup.add(mesh); mesh.position.set(1.35, 0.14, -0.75); }
+        // Kembalikan orientasi normal sebelum komponen dikunci ke motherboard.
+        // Ini penting untuk RAM yang sengaja dibaringkan saat berada di tray.
+        mesh.rotation.set(0, 0, 0);
+        if (partId === 'cpu') { moboGroup.add(mesh); mesh.position.set(-0.2, 0.18, -0.75); }
+        else if (partId === 'cpuCooler') { moboGroup.add(mesh); mesh.position.set(-0.2, 0.18, -0.75); }
+        else if (partId === 'ram1') { moboGroup.add(mesh); mesh.position.set(1.17, 0.14, -0.75); }
+        else if (partId === 'ram2') { moboGroup.add(mesh); mesh.position.set(1.89, 0.14, -0.75); }
         else if (partId === 'ssd') { moboGroup.add(mesh); mesh.position.set(-0.15, 0.13, 0.35); }
         else if (partId === 'vga') { moboGroup.add(mesh); mesh.position.set(-0.35, 0.22, 1.05); }
         else if (partId === 'psu') { caseGroup.add(mesh); mesh.position.set(-2.7, 0.34, 1.85); }
-        else if (partId === 'cable') { caseGroup.add(mesh); mesh.position.set(0.75, 0.32, -0.25); }
+        else if (partId === 'cable') {
+            mesh.scale.set(1, 1, 1);
+            caseGroup.add(mesh);
+            mesh.position.set(0.40, 0.84, 0.095);
+        }
     }
 
     async function triggerCasePower() {
@@ -807,8 +919,8 @@
     }
 
     async function saveRecordToBackend(statusText) {
-        const studentName = document.getElementById('student-name-input').value.trim() || 'Siswa Kelas VII';
-        const studentClass = document.getElementById('student-class-input').value.trim() || 'VII SMPIT Sahabat Alam';
+        const studentName = document.getElementById('student-name-input').value.trim() || 'Nama Siswa';
+        const studentClass = document.getElementById('student-class-input').value.trim() || 'Kelas belum diisi';
         const duration = Math.round((Date.now() - state.startTime) / 1000);
 
         const localRecord = {
@@ -855,10 +967,13 @@
         Object.values(CATALOG).forEach(part => {
             const isInst = state.installed.includes(part.id);
             const isSel = state.selectedPart === part.id;
+            const missingReq = (part.requires || []).find(req => !state.installed.includes(req));
+            const isLocked = !isInst && Boolean(missingReq);
 
             const card = document.createElement('div');
-            card.draggable = !isInst;
-            card.className = `part-card p-3 rounded-xl border border-slate-800 bg-slate-950/85 cursor-pointer ${isInst ? 'installed' : ''} ${isSel ? 'selected' : ''}`;
+            card.draggable = false;
+            card.style.touchAction = 'none';
+            card.className = `part-card p-3 rounded-xl border border-slate-800 bg-slate-950/85 cursor-pointer ${isInst ? 'installed' : ''} ${isSel ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
             card.innerHTML = `
                 <div class="flex items-center justify-between gap-2">
                     <div>
@@ -868,22 +983,33 @@
                         </div>
                         <p class="text-[11px] text-slate-400 mt-0.5">${part.subtitle}</p>
                     </div>
-                    <span class="text-xs font-bold ${isInst ? 'text-emerald-400' : 'text-sky-400'}">
-                        ${isInst ? '✓ Terpasang' : '⤢ Drag'}
+                    <span class="text-xs font-bold ${isInst ? 'text-emerald-400' : isLocked ? 'text-amber-400' : 'text-sky-400'}">
+                        ${isInst ? '✓ Terpasang' : isLocked ? '🔒 Pasang prasyarat' : '⤢ Seret'}
                     </span>
                 </div>
             `;
 
-            card.addEventListener('click', () => selectComponent(part.id));
-            card.addEventListener('dragstart', (e) => {
-                if (isInst) return e.preventDefault();
-                state.draggingPart = part.id;
+            card.addEventListener('click', () => {
+                if (isLocked) {
+                    showStatusBanner('info', 'Pasang komponen sebelumnya', `Pasang ${CATALOG[missingReq]?.name || missingReq} terlebih dahulu.`);
+                    return;
+                }
                 selectComponent(part.id);
-                highlightSlots(true);
             });
-            card.addEventListener('dragend', () => {
-                state.draggingPart = null;
-                highlightSlots(false);
+            card.addEventListener('pointerdown', (e) => {
+                if (isInst) return;
+                if (isLocked) {
+                    showStatusBanner('info', 'Pasang komponen sebelumnya', `Pasang ${CATALOG[missingReq]?.name || missingReq} terlebih dahulu.`);
+                    return;
+                }
+                e.preventDefault();
+                state.draggingPart = part.id;
+                state.dragPointerId = e.pointerId;
+                state.hoveredSlot = null;
+                selectComponent(part.id);
+                controls.enabled = false;
+                highlightSlots(true);
+                try { card.setPointerCapture(e.pointerId); } catch (_) {}
             });
 
             list.appendChild(card);
@@ -950,17 +1076,18 @@
     }
 
     function updateHUD() {
-        document.getElementById('hud-installed').textContent = `${state.installed.length}/6`;
+        const totalParts = Object.keys(CATALOG).length;
+        document.getElementById('hud-installed').textContent = `${state.installed.length}/${totalParts}`;
         document.getElementById('hud-score').textContent = state.assemblyScore;
         document.getElementById('hud-errors').textContent = state.errorsCount;
 
         const powerBtn = document.getElementById('btn-case-power');
-        if (state.installed.length === 6 && !state.pcPoweredOn) {
+        if (state.installed.length === totalParts && !state.pcPoweredOn) {
             powerBtn.classList.add('power-ready', 'bg-sky-600');
             showStatusBanner(
                 'success',
-                'Semua 6 Komponen Terpasang! Siap Dinyalakan!',
-                'Tekan <strong>Tombol Power di Casing PC</strong> (atau klik tombol Power biru di bawah) untuk menyalakan Windows!'
+                'Semua komponen terpasang! Siap dinyalakan!',
+                'Hebat! Tekan <strong>Tombol Power di Casing PC</strong> untuk melihat proses boot pada monitor virtual.'
             );
         }
         renderPartsSidebar();
@@ -1018,7 +1145,8 @@
         } else {
             itemData = CATALOG[itemId];
             if (itemId === 'cpu') { galleryCurrentMesh = M.buildCPU3D(); galleryCurrentMesh.scale.set(2.2, 2.2, 2.2); }
-            else if (itemId === 'ram') { galleryCurrentMesh = M.buildRAM3D(); galleryCurrentMesh.scale.set(1.45, 1.45, 1.45); }
+            else if (itemId === 'ram1' || itemId === 'ram2') { galleryCurrentMesh = M.buildRAM3D(true); galleryCurrentMesh.scale.set(1.45, 1.45, 1.45); }
+            else if (itemId === 'cpuCooler') { galleryCurrentMesh = M.buildCPUCooler3D(null); galleryCurrentMesh.scale.set(1.05, 1.05, 1.05); }
             else if (itemId === 'ssd') { galleryCurrentMesh = M.buildSSD3D(); galleryCurrentMesh.scale.set(1.85, 1.85, 1.85); }
             else if (itemId === 'vga') { galleryCurrentMesh = M.buildVGA3D(null); galleryCurrentMesh.scale.set(0.95, 0.95, 0.95); }
             else if (itemId === 'psu') { galleryCurrentMesh = M.buildPSU3D(); galleryCurrentMesh.scale.set(1.15, 1.15, 1.15); }
@@ -1204,7 +1332,7 @@
     };
 
     window.setCameraPreset = function (preset) {
-        if (preset === 'overview') { camera.position.set(0.4, 9.2, 11.8); controls.target.set(0, 1.2, 0); }
+        if (preset === 'overview') { camera.position.set(0.4, 13.2, 18.3); controls.target.set(0.5, 0.9, 1.9); }
         else if (preset === 'motherboard') { camera.position.set(-1.6, 6.2, 4.2); controls.target.set(-1.65, 0.4, -0.05); }
         else if (preset === 'monitor') { camera.position.set(3.2, 3.2, 5.2); controls.target.set(4.55, 2.2, -0.35); }
         controls.update();
@@ -1234,8 +1362,10 @@
             const mesh = componentMeshes[partId];
             scene.add(mesh);
             mesh.position.copy(trayPositions[partId]);
+            mesh.rotation.set(0, 0, 0);
+            if (trayRotations[partId]) mesh.rotation.copy(trayRotations[partId]);
+            mesh.scale.setScalar(partId === 'cable' ? 0.38 : 1);
         });
-
         powerLedMat.color.setHex(0x38bdf8);
         powerLedMat.emissive.setHex(0x0284c7);
         powerLedMat.emissiveIntensity = 0.25;
@@ -1266,8 +1396,8 @@
     };
 
     window.openCertificateModal = function () {
-        document.getElementById('cert-student-name').textContent = document.getElementById('student-name-input').value || 'Peserta Didik Kelas VII';
-        document.getElementById('cert-student-class').textContent = document.getElementById('student-class-input').value || 'VII SMPIT Sahabat Alam';
+        document.getElementById('cert-student-name').textContent = document.getElementById('student-name-input').value || 'Nama Siswa';
+        document.getElementById('cert-student-class').textContent = document.getElementById('student-class-input').value || 'Kelas belum diisi';
         document.getElementById('cert-score').textContent = state.assemblyScore;
         document.getElementById('certificate-modal').classList.remove('hidden');
     };
@@ -1284,9 +1414,8 @@
         clockTime += 0.03;
 
         if (state.pcPoweredOn) {
-            vgaFanMeshes.forEach(fan => {
-                fan.rotation.y += 0.30;
-            });
+            vgaFanMeshes.forEach(fan => { fan.rotation.y += 0.30; });
+            cpuFanMeshes.forEach(fan => { fan.rotation.y += 0.34; });
         }
 
         Object.keys(componentMeshes).forEach((id, idx) => {
@@ -1319,6 +1448,58 @@
     if (window.ResizeObserver && viewport) {
         new ResizeObserver(resizeViewport).observe(viewport);
     }
+
+    // Fullscreen 3D viewport: mendukung fullscreen browser dan fallback fullscreen CSS.
+    function syncFullscreenButton() {
+        const button = document.getElementById('btn-viewport-fullscreen');
+        if (!button) return;
+        const isFull = document.fullscreenElement === viewport || viewport.classList.contains('sim-fallback-fullscreen');
+        button.textContent = isFull ? '↙ Keluar Fullscreen' : '⛶ Fullscreen';
+        button.setAttribute('aria-pressed', isFull ? 'true' : 'false');
+    }
+    window.toggleViewportFullscreen = async function () {
+        try {
+            if (document.fullscreenElement === viewport) {
+                await document.exitFullscreen();
+                viewport.classList.remove('sim-fallback-fullscreen');
+            } else if (viewport.classList.contains('sim-fallback-fullscreen')) {
+                viewport.classList.remove('sim-fallback-fullscreen');
+            } else if (viewport.requestFullscreen) {
+                await viewport.requestFullscreen({ navigationUI: 'hide' });
+            } else {
+                viewport.classList.add('sim-fallback-fullscreen');
+            }
+        } catch (error) {
+            // Browser/perangkat yang membatasi Fullscreen API tetap mendapat mode layar penuh CSS.
+            viewport.classList.toggle('sim-fallback-fullscreen');
+        }
+        syncFullscreenButton();
+        setTimeout(resizeViewport, 80);
+    };
+    document.addEventListener('fullscreenchange', () => {
+        syncFullscreenButton();
+        setTimeout(resizeViewport, 80);
+    });
+
+    // Tema web gelap/terang disimpan agar pilihan tetap ada saat halaman dibuka lagi.
+    function applyWebTheme(theme) {
+        const light = theme === 'light';
+        document.body.classList.toggle('theme-light', light);
+        document.body.dataset.theme = light ? 'light' : 'dark';
+        const button = document.getElementById('btn-web-theme');
+        if (button) {
+            button.textContent = light ? '☾ Mode Gelap' : '☀ Mode Terang';
+            button.setAttribute('aria-pressed', light ? 'true' : 'false');
+        }
+        try { localStorage.setItem('sim-hardware-web-theme', light ? 'light' : 'dark'); } catch (error) {}
+    }
+    window.toggleWebTheme = function () {
+        applyWebTheme(document.body.classList.contains('theme-light') ? 'dark' : 'light');
+    };
+    let savedTheme = 'dark';
+    try { savedTheme = localStorage.getItem('sim-hardware-web-theme') || 'dark'; } catch (error) {}
+    applyWebTheme(savedTheme);
+    syncFullscreenButton();
 
     // Render segera tanpa menunggu backend
     renderPartsSidebar();

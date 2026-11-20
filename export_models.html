@@ -23,7 +23,7 @@ code{color:#8ee3ff}
  <div class="card">
   <span class="tag">SIM-HARDWARE 3D PRO</span>
   <h1>Ekspor Komponen 3D</h1>
-  <p class="muted">Unduh komponen 3D terbaru yang dibuat secara prosedural di proyek ini menjadi file <b>.GLB</b>. Motherboard kini mencakup soket LGA1700, slot DIMM, slot M.2, slot PCIe, VRM, heatsink, port dan detail PCB; CPU, RAM, SSD, VGA, dan PSU memakai builder yang sama dengan tampilan perakitan serta galeri. GLB adalah model 3D, bukan gambar datar. File ini dapat dimuat kembali ke halaman web menggunakan Three.js GLTFLoader atau software 3D seperti Blender.</p>
+  <p class="muted">Unduh komponen 3D terbaru yang dibuat secara prosedural di proyek ini menjadi file <b>.GLB</b>. Motherboard kini mencakup soket LGA1700, slot DIMM, slot M.2, slot PCIe, VRM, heatsink, port dan detail PCB; CPU, RAM individual, CPU cooler, SSD, VGA, dan PSU memakai builder yang sama dengan tampilan perakitan serta galeri. GLB adalah model 3D, bukan gambar datar. File ini dapat dimuat kembali ke halaman web menggunakan Three.js GLTFLoader atau software 3D seperti Blender.</p>
   <p class="muted"><b>Petunjuk:</b> letakkan halaman ini di folder utama proyek, sejajar dengan <code>index.html</code>, kemudian buka melalui server lokal sesuai petunjuk README. Koneksi internet diperlukan untuk memuat Three.js dari CDN.</p>
  </div>
  <div class="card">
@@ -31,7 +31,8 @@ code{color:#8ee3ff}
   <div class="grid">
    <button data-model="motherboard">Unduh Motherboard ATX Detail (.glb)</button>
    <button data-model="cpu">Unduh Processor LGA1700 Detail (.glb)</button>
-   <button data-model="ram">Unduh RAM DDR4 16GB Kit (2×8GB) (.glb)</button>
+   <button data-model="ram">Unduh satu modul RAM DDR4 8GB (.glb)</button>
+   <button data-model="cpuCooler">Unduh Kipas & Heatsink CPU (.glb)</button>
    <button data-model="ssd">Unduh SSD M.2 2280 Detail (.glb)</button>
    <button data-model="vga">Unduh VGA Triple-Fan Detail (.glb)</button>
    <button data-model="psu">Unduh PSU Modular 850W Detail (.glb)</button>
@@ -51,7 +52,8 @@ code{color:#8ee3ff}
  const builders={
   motherboard:()=>window.HardwareModels3D.buildMotherboardAssembly(),
   cpu:()=>window.HardwareModels3D.buildCPU3D(),
-  ram:()=>window.HardwareModels3D.buildRAM3D(),
+  ram:()=>window.HardwareModels3D.buildRAM3D(true),
+  cpuCooler:()=>window.HardwareModels3D.buildCPUCooler3D([]),
   ssd:()=>window.HardwareModels3D.buildSSD3D(),
   vga:()=>window.HardwareModels3D.buildVGA3D([]),
   psu:()=>window.HardwareModels3D.buildPSU3D(),
@@ -74,7 +76,7 @@ code{color:#8ee3ff}
      try{
       const blob=new Blob([result],{type:'model/gltf-binary'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download=key==='motherboard'?'motherboard-3d.glb':(key==='ram'?'ram-ddr4-16gb-kit-2x8gb.glb':key+'-3d.glb');
+      const a=document.createElement('a');a.href=url;a.download=key==='motherboard'?'motherboard-3d.glb':(key==='ram'?'ram-ddr4-8gb-module.glb':key==='cpuCooler'?'cpu-cooler-120mm.glb':key+'-3d.glb');
       document.body.appendChild(a);a.click();a.remove();
       setTimeout(()=>URL.revokeObjectURL(url),2000);
       setStatus('Berhasil: '+a.download+' sudah mulai diunduh.');

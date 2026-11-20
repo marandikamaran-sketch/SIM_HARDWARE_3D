@@ -90,7 +90,7 @@ Catatan: halaman ekspor memerlukan koneksi internet untuk memuat Three.js dan GL
 
 ## Pembaruan model RAM DDR4
 
-Model RAM pada tray perakitan, slot motherboard, galeri inspeksi, dan halaman ekspor GLB kini menggunakan satu builder DDR4 UDIMM dual-channel 2x8GB yang sama. Model menampilkan PCB hijau bertekstur, chip DRAM pada kedua sisi, label 8GB, komponen SMD, jalur sirkuit, takik kunci, dan kontak emas.
+Model RAM pada tray perakitan, slot motherboard, galeri inspeksi, dan halaman ekspor GLB menggunakan builder DDR4 UDIMM yang sama. Pada sesi praktik, setiap RAM dibuat sebagai satu objek terpisah (8GB per keping), sehingga siswa harus menyeret RAM pertama ke A2 lalu RAM kedua ke B2. Model menampilkan PCB hijau bertekstur, chip DRAM pada kedua sisi, label 8GB, komponen SMD, jalur sirkuit, takik kunci, dan kontak emas.
 
 Platform latihan diselaraskan ke motherboard ATX Z790 DDR4 + Intel Core i9-14900K (LGA1700) agar tipe RAM DDR4 konsisten dengan soket CPU dan papan utama.
 
@@ -100,3 +100,38 @@ Platform latihan diselaraskan ke motherboard ATX Z790 DDR4 + Intel Core i9-14900
 Builder 3D kini menampilkan motherboard ATX dengan heatsink VRM bersirip, kapasitor solid, port I/O, header daya, port SATA, lubang baut, baterai CMOS, detail PCB, dan area ekspansi. Processor menampilkan IHS logam, substrate, kontak LGA pada bagian bawah, serta penanda orientasi. PSU menampilkan kipas 120 mm dengan grille, panel modular, label daya, soket AC, dan sakelar. VGA menampilkan tiga kipas aksial berbilah melengkung, sirip heatsink, heatpipe tembaga, backplate, bracket I/O, serta konektor PCIe. SSD M.2 2280 menampilkan controller, NAND, komponen SMD, kontak M-Key, dan lubang baut.
 
 Konfigurasi materi diseragamkan untuk latihan: Z790 DDR4 + Intel Core i9-14900K + RAM DDR4-3200 + SSD NVMe Gen4 + GPU RTX 4080 SUPER 16GB + PSU 850W Gold. Bentuk model bersifat ilustrasi edukasi dan tidak menyalin satu SKU/produk vendor tertentu secara presisi.
+
+
+## Pembaruan antarmuka dan perakitan (20 November 2026)
+
+- Kabel ATX 24-pin kini memiliki dua kepala konektor: sisi modular PSU dan sisi 24-pin motherboard. Titik akhir konektor motherboard diselaraskan dengan header ATX pada motherboard virtual.
+- Setelah CPU dipasang, siswa harus mengambil kipas dan heatsink CPU sebagai komponen 3D terpisah lalu men-drag-nya ke atas processor. Kipas mulai berputar ketika simulasi komputer dinyalakan.
+- Tombol **Fullscreen** memperbesar area laboratorium 3D ke layar penuh. Browser/perangkat yang membatasi Fullscreen API menggunakan fallback layar penuh berbasis CSS.
+- Tombol **Mode Terang / Mode Gelap** mengubah tema web dan menyimpan preferensi di browser.
+- Kontrol sentuh menggunakan Pointer Events dan area kanvas tetap memakai `touch-action: none` agar gestur drag dan putar tidak memicu scroll halaman.
+
+Jalankan dengan `python app.py`, lalu buka alamat lokal yang ditampilkan di terminal. Untuk fullscreen, tekan tombol **Fullscreen** pada panel 3D.
+
+## Alur praktikum siswa SMP/MTs — delapan komponen
+
+1. Isi nama dan kelas pada kolom identitas di bagian atas.
+2. Seret Processor ke soket LGA1700.
+3. Setelah processor terpasang, ambil kartu **Kipas & Heatsink Processor** dan pasang sebagai komponen 3D terpisah di atas CPU.
+4. Seret RAM pertama ke slot A2, lalu seret RAM kedua ke slot B2. Kedua keping tampil sebagai objek terpisah.
+5. Pasang SSD, VGA, dan PSU, kemudian hubungkan kabel daya ATX.
+6. Tekan tombol Power pada casing untuk melihat hasil POST/boot pada monitor virtual.
+
+Kartu komponen mendukung pointer mouse, jari, dan stylus. Prasyarat pemasangan ditampilkan pada kartu; kipas CPU terkunci sampai processor dipasang, RAM pertama terkunci sampai kipas/heatsink terpasang, dan RAM kedua terkunci sampai RAM pertama masuk ke slot A2.
+
+Catatan urutan praktikum: pasang processor, pasang kipas/heatsink CPU secara terpisah, lalu seret RAM pertama ke slot A2 dan RAM kedua ke slot B2.
+
+
+## Perbaikan tata letak tray komponen (20 November 2026)
+
+- Seluruh komponen yang belum dipasang kini berada pada platform tray khusus di bagian depan casing, bukan tersebar atau berada di dalam ruang casing.
+- Tray memakai dua baris: CPU, dua keping RAM satuan, SSD, dan CPU cooler di baris depan; VGA, PSU, dan kabel ATX di baris belakang.
+- Kipas/heatsink CPU tetap berupa objek 3D terpisah dan diletakkan di luar casing sampai siswa memasangnya setelah CPU.
+- RAM A2 dan RAM B2 diletakkan berjauhan. Saat berada di tray, modul RAM dibaringkan agar tidak tampak seperti bilah yang berdiri dan tidak bertumpuk. Saat dipasang, rotasi dikembalikan ke posisi vertikal agar sesuai dengan slot DIMM.
+- Ketinggian tray diselaraskan dengan dasar masing-masing model supaya komponen tidak melayang atau tertanam ke meja.
+- Tombol reset mengembalikan posisi dan rotasi tray, termasuk orientasi RAM yang dibaringkan.
+- Kamera overview sedikit diperlebar agar area casing dan tray lebih mudah terlihat sekaligus.
