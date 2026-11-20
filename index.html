@@ -41,7 +41,7 @@
                     🛠️ 1. Rakit PC 3D Realistis
                 </button>
                 <button onclick="switchTab('gallery')" data-tab="gallery" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border border-transparent text-slate-300">
-                    🔍 2. Kenali Komponen Asli 360°
+                    🔍 2. Kenali Komponen Hardware 360°
                 </button>
                 <button onclick="switchTab('quiz')" data-tab="quiz" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border border-transparent text-slate-300">
                     📝 3. Kuis Evaluasi
@@ -73,7 +73,7 @@
         <aside class="lg:col-span-3 flex flex-col gap-3">
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
                 <div class="flex items-center justify-between mb-1.5">
-                    <h2 class="text-sm font-bold text-white">Komponen Perangkat Keras</h2>
+                    <h2 class="text-sm font-bold text-white">8 Komponen Perangkat Keras</h2>
                     <button onclick="resetSimulation()" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">
                         ↺ Reset
                     </button>
@@ -191,7 +191,7 @@
             </div>
 
             <!-- CHECKLIST STATUS -->
-            <div id="checklist-bar" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"></div>
+            <div id="checklist-bar" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2"></div>
         </section>
     </main>
 
@@ -201,31 +201,37 @@
     <section id="tab-gallery" class="tab-section hidden flex-1 max-w-[1440px] w-full mx-auto px-4 py-5">
         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div class="lg:col-span-3 space-y-2">
-                <h2 class="text-base font-extrabold text-white mb-1">Galeri Hardware Asli 360°</h2>
-                <p class="text-xs text-slate-400 mb-3">Pilih komponen untuk memutar dan mengamati bentuk fisik, warna pin, dan port aslinya.</p>
+    <h2 class="text-base font-extrabold text-white mb-1">Komponen Hardware 360°</h2>
+    <p class="text-xs text-slate-400 mb-3">Pilih komponen hardware untuk memutar 360° dan mengamati bentuk fisik, pin emas, soket, dan kipas aslinya.</p>
 
-                <button onclick="loadGalleryItem('motherboard')" data-item="motherboard" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    🟩 Motherboard ATX Z890
-                </button>
-                <button onclick="loadGalleryItem('cpu')" data-item="cpu" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    🔲 Processor (CPU) LGA1851
-                </button>
-                <button onclick="loadGalleryItem('ram')" data-item="ram" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    📏 Memory RAM DDR5 Green PCB
-                </button>
-                <button onclick="loadGalleryItem('ssd')" data-item="ssd" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    💾 SSD NVMe M.2 2280
-                </button>
-                <button onclick="loadGalleryItem('vga')" data-item="vga" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    🎮 VGA NVIDIA GeForce RTX 5090
-                </button>
-                <button onclick="loadGalleryItem('psu')" data-item="psu" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    ⚡ Power Supply Unit (PSU)
-                </button>
-                <button onclick="loadGalleryItem('cable')" data-item="cable" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-                    🔌 Kabel Power ATX 24-Pin
-                </button>
-            </div>
+    <button onclick="loadGalleryItem('motherboard')" data-item="motherboard" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        🟩 Motherboard ATX Z890-PRO
+    </button>
+    <button onclick="loadGalleryItem('cpu')" data-item="cpu" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        🔲 Processor (CPU) LGA1851
+    </button>
+    <button onclick="loadGalleryItem('cooler')" data-item="cooler" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        🌀 Kipas Processor (CPU Cooler)
+    </button>
+    <button onclick="loadGalleryItem('ram1')" data-item="ram1" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        📏 Memory RAM DDR5 (Keping 1)
+    </button>
+    <button onclick="loadGalleryItem('ram2')" data-item="ram2" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        📏 Memory RAM DDR5 (Keping 2)
+    </button>
+    <button onclick="loadGalleryItem('ssd')" data-item="ssd" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        💾 SSD NVMe M.2 2280
+    </button>
+    <button onclick="loadGalleryItem('vga')" data-item="vga" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        🎮 VGA NVIDIA GeForce RTX 5090
+    </button>
+    <button onclick="loadGalleryItem('psu')" data-item="psu" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        ⚡ Power Supply Unit (PSU)
+    </button>
+    <button onclick="loadGalleryItem('cable')" data-item="cable" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+        🔌 Kabel Power ATX 24-Pin
+    </button>
+</div>
 
             <div class="lg:col-span-5">
                 <div id="gallery-viewport" class="w-full h-[460px] rounded-2xl border border-slate-800 bg-slate-950 relative overflow-hidden">
