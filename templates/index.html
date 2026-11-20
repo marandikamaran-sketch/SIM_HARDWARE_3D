@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script>
-        window.__STATIC_PREFIX__ = (window.location.protocol === 'file:') ? './static' : './static';
+        window.__STATIC_PREFIX__ = (window.location.protocol === 'file:') ? '../static' : '/static';
         document.write('<link rel="stylesheet" href="' + window.__STATIC_PREFIX__ + '/css/style.css" />');
     </script>
 </head>
@@ -41,7 +41,7 @@
                     🛠️ 1. Rakit PC 3D Realistis
                 </button>
                 <button onclick="switchTab('gallery')" data-tab="gallery" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border border-transparent text-slate-300">
-                    🔍 2. Kenali Komponen Hardware 360°
+                    🔍 2. Kenali Komponen Asli 360°
                 </button>
                 <button onclick="switchTab('quiz')" data-tab="quiz" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border border-transparent text-slate-300">
                     📝 3. Kuis Evaluasi
@@ -73,7 +73,7 @@
         <aside class="lg:col-span-3 flex flex-col gap-3">
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
                 <div class="flex items-center justify-between mb-1.5">
-                    <h2 class="text-sm font-bold text-white">8 Komponen Perangkat Keras</h2>
+                    <h2 class="text-sm font-bold text-white">Komponen Perangkat Keras</h2>
                     <button onclick="resetSimulation()" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">
                         ↺ Reset
                     </button>
@@ -92,7 +92,7 @@
                         🔎 Zoom 3D
                     </button>
                 </div>
-                <h3 id="insp-title" class="text-sm font-extrabold text-white">Motherboard ATX Z890-PRO</h3>
+                <h3 id="insp-title" class="text-sm font-extrabold text-white">Motherboard ATX Z790-PRO DDR4</h3>
                 <p id="insp-category" class="text-[11px] text-emerald-400 font-semibold">Papan Sirkuit Utama (Mainboard)</p>
 
                 <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5">
@@ -191,7 +191,7 @@
             </div>
 
             <!-- CHECKLIST STATUS -->
-            <div id="checklist-bar" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2"></div>
+            <div id="checklist-bar" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"></div>
         </section>
     </main>
 
@@ -201,37 +201,31 @@
     <section id="tab-gallery" class="tab-section hidden flex-1 max-w-[1440px] w-full mx-auto px-4 py-5">
         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div class="lg:col-span-3 space-y-2">
-    <h2 class="text-base font-extrabold text-white mb-1">Komponen Hardware 360°</h2>
-    <p class="text-xs text-slate-400 mb-3">Pilih komponen hardware untuk memutar 360° dan mengamati bentuk fisik, pin emas, soket, dan kipas aslinya.</p>
+                <h2 class="text-base font-extrabold text-white mb-1">Galeri Hardware Asli 360°</h2>
+                <p class="text-xs text-slate-400 mb-3">Pilih komponen untuk memutar dan mengamati bentuk fisik, warna pin, dan port aslinya.</p>
 
-    <button onclick="loadGalleryItem('motherboard')" data-item="motherboard" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        🟩 Motherboard ATX Z890-PRO
-    </button>
-    <button onclick="loadGalleryItem('cpu')" data-item="cpu" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        🔲 Processor (CPU) LGA1851
-    </button>
-    <button onclick="loadGalleryItem('cooler')" data-item="cooler" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        🌀 Kipas Processor (CPU Cooler)
-    </button>
-    <button onclick="loadGalleryItem('ram1')" data-item="ram1" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        📏 Memory RAM DDR5 (Keping 1)
-    </button>
-    <button onclick="loadGalleryItem('ram2')" data-item="ram2" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        📏 Memory RAM DDR5 (Keping 2)
-    </button>
-    <button onclick="loadGalleryItem('ssd')" data-item="ssd" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        💾 SSD NVMe M.2 2280
-    </button>
-    <button onclick="loadGalleryItem('vga')" data-item="vga" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        🎮 VGA NVIDIA GeForce RTX 5090
-    </button>
-    <button onclick="loadGalleryItem('psu')" data-item="psu" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        ⚡ Power Supply Unit (PSU)
-    </button>
-    <button onclick="loadGalleryItem('cable')" data-item="cable" class="gal-selector-btn w-full text-left p-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
-        🔌 Kabel Power ATX 24-Pin
-    </button>
-</div>
+                <button onclick="loadGalleryItem('motherboard')" data-item="motherboard" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    🟩 Motherboard ATX Z790 DDR4
+                </button>
+                <button onclick="loadGalleryItem('cpu')" data-item="cpu" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    🔲 Processor (CPU) LGA1700
+                </button>
+                <button onclick="loadGalleryItem('ram')" data-item="ram" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    📏 Memory RAM DDR4 Green PCB
+                </button>
+                <button onclick="loadGalleryItem('ssd')" data-item="ssd" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    💾 SSD NVMe M.2 2280
+                </button>
+                <button onclick="loadGalleryItem('vga')" data-item="vga" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    🎮 VGA NVIDIA GeForce RTX 4080 SUPER
+                </button>
+                <button onclick="loadGalleryItem('psu')" data-item="psu" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    ⚡ Power Supply Unit (PSU)
+                </button>
+                <button onclick="loadGalleryItem('cable')" data-item="cable" class="gal-selector-btn w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-950 hover:border-sky-500 text-xs font-bold text-white">
+                    🔌 Kabel Power ATX 24-Pin
+                </button>
+            </div>
 
             <div class="lg:col-span-5">
                 <div id="gallery-viewport" class="w-full h-[460px] rounded-2xl border border-slate-800 bg-slate-950 relative overflow-hidden">
@@ -244,7 +238,7 @@
 
             <div class="lg:col-span-4 flex flex-col justify-center space-y-3 bg-slate-950/80 border border-slate-800 rounded-2xl p-5">
                 <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Identifikasi Perangkat Keras</span>
-                <h3 id="gal-title" class="text-xl font-extrabold text-white">Motherboard ATX Z890-PRO</h3>
+                <h3 id="gal-title" class="text-xl font-extrabold text-white">Motherboard ATX Z790-PRO DDR4</h3>
                 <p id="gal-subtitle" class="text-xs text-emerald-400 font-semibold"></p>
 
                 <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
@@ -350,19 +344,19 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mono text-[11px]">
                             <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                                 <span class="text-slate-400 block">Processor (CPU):</span>
-                                <span class="text-sky-300 font-bold">Intel Core Ultra 9 285K @ 5.70GHz</span>
+                                <span class="text-sky-300 font-bold">Intel Core i9-14900K @ 6.00GHz</span>
                             </div>
                             <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                                 <span class="text-slate-400 block">Memory (RAM):</span>
-                                <span class="text-emerald-300 font-bold">16.0 GB DDR5-5600 Green PCB</span>
+                                <span class="text-emerald-300 font-bold">16.0 GB DDR4-3200 Green PCB</span>
                             </div>
                             <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                                 <span class="text-slate-400 block">Display Adapter (VGA):</span>
-                                <span class="text-purple-300 font-bold">NVIDIA GeForce RTX 5090 32GB GDDR7</span>
+                                <span class="text-purple-300 font-bold">NVIDIA GeForce RTX 4080 SUPER 16GB GDDR6X</span>
                             </div>
                             <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                                 <span class="text-slate-400 block">Storage & Power:</span>
-                                <span class="text-amber-300 font-bold">1TB NVMe M.2 SSD • PSU 650W OK</span>
+                                <span class="text-amber-300 font-bold">1TB NVMe M.2 SSD • PSU 850W Gold OK</span>
                             </div>
                         </div>
                     </div>
@@ -425,9 +419,9 @@
     </div>
 
     <script>
-        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/textures_pbr.js"><\/script>');
-        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/models_3d.js"><\/script>');
-        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/main.js"><\/script>');
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/textures_pbr.js?v=20261120-realistic-components-v2"><\/script>');
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/models_3d.js?v=20261120-realistic-components-v2"><\/script>');
+        document.write('<script src="' + window.__STATIC_PREFIX__ + '/js/main.js?v=20261120-realistic-components-v2"><\/script>');
     </script>
 </body>
 </html>

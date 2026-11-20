@@ -7,21 +7,21 @@ serta penjelasan pedagogis dan analogi untuk siswa kelas VII SMP/MTs.
 
 MOTHERBOARD_INFO = {
     "id": "motherboard",
-    "name": "Motherboard ATX Z890-PRO",
-    "subtitle": "Papan Sirkuit Utama (Mainboard) • Socket LGA1851",
+    "name": "Motherboard ATX Z790-PRO DDR4",
+    "subtitle": "Papan Sirkuit Utama (Mainboard) • Socket LGA1700",
     "category": "Processing & Interconnect Hub",
     "physical_appearance": "Papan PCB fiberglass hijau-gelap/hitam berukuran persegi panjang dengan jalur sirkuit tembaga keemasan, kapasitor silinder perak, heatsink aluminium, soket CPU berpenutup logam, slot RAM memanjang, slot M.2, dan slot VGA bertulang baja.",
     "description": "Motherboard adalah papan sirkuit utama tempat seluruh komponen komputer (Processor, RAM, SSD M.2, VGA, dan kabel daya PSU) terhubung dan saling berkomunikasi.",
     "analogy": "Seperti jalan raya dan tata kota yang menghubungkan pusat pemerintahan (CPU), meja kerja (RAM), gudang arsip (SSD), dan pembangkit listrik (PSU).",
-    "specs": "Form Factor ATX • Socket LGA1851 • 4x Slot DDR4 DIMM • Slot M.2 NVMe • PCIe 4.0 x16 • ATX 24-Pin"
+    "specs": "Form Factor ATX • Socket LGA1700 • 4x Slot DDR4 DIMM • Slot M.2 NVMe • PCIe 4.0 x16 • ATX 24-Pin"
 }
 
 HARDWARE_CATALOG = {
     "cpu": {
         "id": "cpu",
         "name": "Processor (CPU)",
-        "short_name": "CPU Intel Ultra 9",
-        "subtitle": "Intel Core Ultra 9 285K • Socket LGA1851",
+        "short_name": "Intel Core i9-14900K",
+        "subtitle": "Intel Core i9-14900K • Socket LGA1700",
         "category": "Processing Device (Perangkat Pemroses)",
         "target_slot": "slot_cpu",
         "slot_label": "Soket Processor (LGA1700) di Tengah Motherboard",
@@ -30,13 +30,13 @@ HARDWARE_CATALOG = {
         "physical_appearance": "Keping persegi berukuran ±4,5 cm dengan papan sirkuit hijau di tepi, pelat logam nikel perak mengilap (IHS) bertuliskan seri prosesor, bagian bawah dipenuhi titik kontak emas, serta tanda segitiga emas di salah satu sudut.",
         "description": "Central Processing Unit (CPU) adalah otak utama komputer yang mengeksekusi instruksi program dan melakukan perhitungan aritmetika serta logika. Dipasang tepat pada soket prosesor di tengah motherboard.",
         "analogy": "Seperti otak manusia atau koki utama di dapur yang mengolah semua perintah dari pengguna.",
-        "specs": "16 Core (8P+8E) • 24 Thread • Boost 5.40 GHz • Cache 30 MB • Socket LGA1851"
+        "specs": "24 Core (8P+16E) • 32 Thread • Boost 6.00 GHz • Cache 36 MB • Socket LGA1700"
     },
     "ram": {
         "id": "ram",
-        "name": "Memory RAM 16GB",
-        "short_name": "RAM DDR4 16GB",
-        "subtitle": "DDR5 5600MHz Green PCB Asli (2x8GB)",
+        "name": "Memory RAM DDR4 16GB Kit",
+        "short_name": "RAM DDR4 16GB Kit (2x8GB)",
+        "subtitle": "DDR4 3200MHz Green PCB Asli (2x8GB)",
         "category": "Processing / Volatile Memory",
         "target_slot": "slot_ram",
         "slot_label": "Slot RAM (DIMM DDR4) di Samping Soket CPU",
@@ -57,40 +57,40 @@ HARDWARE_CATALOG = {
         "slot_label": "Slot M.2 NVMe di Permukaan Motherboard",
         "order_hint": 3,
         "requires": [],
-        "physical_appearance": "Papan sirkuit kecil ramping berukuran 2,2 x 8 cm dengan chip memori hitam (NAND Flash), stiker label biru-hitam, pin emas M-Key di ujung kiri, dan lekukan baut pengunci di ujung kanan.",
+        "physical_appearance": "Modul M.2 2280 sepanjang 80 mm dengan PCB hijau gelap, chip controller NVMe, beberapa paket NAND Flash hitam, komponen SMD, kontak emas M-Key, serta lubang baut pengunci di ujungnya.",
         "description": "Solid State Drive (SSD) NVMe M.2 adalah media penyimpanan data berkecepatan tinggi berbasis chip semikonduktor (tanpa piringan berputar) untuk menyimpan Sistem Operasi Windows, aplikasi, dan dokumen secara permanen.",
         "analogy": "Seperti lemari arsip permanen modern yang menyimpan seluruh buku dan catatan dengan aman meskipun aliran listrik dimatikan.",
-        "specs": "Kapasitas 1 TB • NVMe PCIe 4.0 x4 • Kecepatan Baca 7.000 MB/s"
+        "specs": "Kapasitas 1 TB • NVMe PCIe 4.0 x4 • Kecepatan Baca hingga 7.400 MB/s"
     },
     "vga": {
         "id": "vga",
         "name": "VGA / GPU Card",
-        "short_name": "VGA NVIDIA RTX 5090",
-        "subtitle": "NVIDIA GeForce RTX 5090 • 32GB GDDR7",
+        "short_name": "VGA RTX 4080 SUPER",
+        "subtitle": "NVIDIA GeForce RTX 4080 SUPER • 16GB GDDR6X",
         "category": "Processing / Graphics Output",
         "target_slot": "slot_vga",
         "slot_label": "Slot VGA (PCIe x16 Bertulang Baja) di Motherboard",
         "order_hint": 4,
         "requires": [],
-        "physical_appearance": "Kartu grafis NVIDIA GeForce RTX 5090 berdesain rangka logam gunmetal dengan dua kipas pendingin axial-tech besar, sirip heatsink aluminium padat, pipa pendingin tembaga, logo GEFORCE RTX menyala hijau, dan konektor emas PCIe 5.0 x16.",
+        "physical_appearance": "Kartu grafis kelas tinggi dengan shroud logam gunmetal, tiga kipas pendingin aksial, heatsink aluminium bersirip rapat, heatpipe tembaga, pelat belakang, konektor PCIe x16 berlapis emas, dan soket daya tambahan 16-pin.",
         "description": "Video Graphics Array (VGA) atau Graphics Processing Unit (GPU) bertugas mengolah data grafis dan mengirimkan sinyal tampilan visual ke layar monitor.",
         "analogy": "Seperti pelukis dan desainer khusus yang menggambar seluruh tampilan layar, animasi, dan video agar tampil tajam di monitor.",
-        "specs": "8 GB GDDR6 • Interface PCIe 4.0 x16 • Dual Axial Fan • HDMI 2.1 & DisplayPort"
+        "specs": "16 GB GDDR6X • Interface PCIe 4.0 x16 • Triple Axial Fan • HDMI 2.1 & DisplayPort"
     },
     "psu": {
         "id": "psu",
         "name": "Power Supply (PSU)",
-        "short_name": "PSU 650W Gold",
-        "subtitle": "650W 80+ Gold ATX Power Unit",
+        "short_name": "PSU 850W Gold",
+        "subtitle": "850W 80+ Gold ATX 3.1 Power Unit",
         "category": "Power Supply Unit (Luar Motherboard)",
         "target_slot": "slot_psu",
         "slot_label": "Ruang Dudukan PSU di Luar Area Motherboard",
         "order_hint": 5,
         "requires": [],
-        "physical_appearance": "Kotak logam besi berwarna hitam doff berukuran besar dengan kisi-kisi kipas pendingin melingkar, stiker tabel tegangan (+12V, +5V, +3.3V), sakelar daya I/O, dan soket kabel listrik AC di bagian belakang.",
+        "physical_appearance": "Kotak baja ATX hitam dengan kisi kipas 120 mm di bagian atas, label tabel tegangan di sisi casing, panel konektor modular, soket AC IEC, dan sakelar rocker I/O pada panel belakang.",
         "description": "Power Supply Unit (PSU) dipasang di ruang khusus pada casing di luar area motherboard. PSU mengubah arus listrik bolak-balik (AC 220V) dari stopkontak menjadi arus searah (DC +12V, +5V, +3.3V) bagi komponen komputer.",
         "analogy": "Seperti jantung atau gardu induk listrik yang menyuplai energi stabil ke seluruh bagian rumah.",
-        "specs": "Daya 650 Watt • Sertifikasi 80+ Gold • Kipas 120mm • Proteksi OVP/SCP"
+        "specs": "Daya 850 Watt • Sertifikasi 80+ Gold • Kipas 120mm • Full Modular • Proteksi OVP/SCP"
     },
     "cable": {
         "id": "cable",

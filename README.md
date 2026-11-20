@@ -74,3 +74,29 @@ pip install -r requirements.txt
 python app.py
 ```
 Lalu buka browser ke `http://127.0.0.1:8080`.
+
+## Ekspor Komponen Menjadi File 3D (.GLB)
+
+Proyek ini membuat beberapa objek 3D secara prosedural melalui `static/js/models_3d.js`, bukan menyimpan semuanya sebagai gambar JPG/PNG. Untuk mengunduh komponen sebagai model 3D:
+
+1. Jalankan proyek secara lokal sesuai petunjuk di atas (`python app.py`).
+2. Buka `http://127.0.0.1:8080/export_models.html`.
+3. Klik tombol ekspor untuk motherboard, CPU, RAM, SSD, VGA, PSU, atau kabel.
+4. Pindahkan file `.glb` yang terunduh ke `static/models/` pada proyek.
+5. Muat file `.glb` pada halaman web tujuan menggunakan Three.js `GLTFLoader`, lalu atur skala, posisi, rotasi, dan titik snap sesuai slot motherboard.
+
+Catatan: halaman ekspor memerlukan koneksi internet untuk memuat Three.js dan GLTFExporter dari CDN. Casing/ruang meja pada scene utama dirakit langsung di `static/js/main.js` dan belum disediakan sebagai builder terpisah pada halaman ekspor ini.
+
+
+## Pembaruan model RAM DDR4
+
+Model RAM pada tray perakitan, slot motherboard, galeri inspeksi, dan halaman ekspor GLB kini menggunakan satu builder DDR4 UDIMM dual-channel 2x8GB yang sama. Model menampilkan PCB hijau bertekstur, chip DRAM pada kedua sisi, label 8GB, komponen SMD, jalur sirkuit, takik kunci, dan kontak emas.
+
+Platform latihan diselaraskan ke motherboard ATX Z790 DDR4 + Intel Core i9-14900K (LGA1700) agar tipe RAM DDR4 konsisten dengan soket CPU dan papan utama.
+
+
+## Pembaruan model hardware realistis
+
+Builder 3D kini menampilkan motherboard ATX dengan heatsink VRM bersirip, kapasitor solid, port I/O, header daya, port SATA, lubang baut, baterai CMOS, detail PCB, dan area ekspansi. Processor menampilkan IHS logam, substrate, kontak LGA pada bagian bawah, serta penanda orientasi. PSU menampilkan kipas 120 mm dengan grille, panel modular, label daya, soket AC, dan sakelar. VGA menampilkan tiga kipas aksial berbilah melengkung, sirip heatsink, heatpipe tembaga, backplate, bracket I/O, serta konektor PCIe. SSD M.2 2280 menampilkan controller, NAND, komponen SMD, kontak M-Key, dan lubang baut.
+
+Konfigurasi materi diseragamkan untuk latihan: Z790 DDR4 + Intel Core i9-14900K + RAM DDR4-3200 + SSD NVMe Gen4 + GPU RTX 4080 SUPER 16GB + PSU 850W Gold. Bentuk model bersifat ilustrasi edukasi dan tidak menyalin satu SKU/produk vendor tertentu secara presisi.

@@ -8,65 +8,66 @@
 
 window.HardwareTextures = (function () {
     function createMotherboardPCBTexture() {
+        // Solder mask hijau gelap dengan tekstur fiberglass halus, copper trace,
+        // via plating, dan silk-screen yang tersebar seperti motherboard ATX.
         const c = document.createElement('canvas');
-        c.width = 1024;
-        c.height = 1024;
+        c.width = 1152; c.height = 1024;
         const ctx = c.getContext('2d');
+        const base = ctx.createLinearGradient(0, 0, c.width, c.height);
+        base.addColorStop(0, '#092c21');
+        base.addColorStop(0.48, '#0c3828');
+        base.addColorStop(1, '#06251b');
+        ctx.fillStyle = base; ctx.fillRect(0, 0, c.width, c.height);
 
-        ctx.fillStyle = '#0d231a';
-        ctx.fillRect(0, 0, 1024, 1024);
-
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i < 1024; i += 6) {
-            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 1024); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(1024, i); ctx.stroke();
+        // Serat fiberglass mikro yang sangat halus; tidak dibuat menjadi grid besar.
+        for (let i = 0; i < 4200; i++) {
+            const x = (i * 1973) % c.width;
+            const y = (i * 1427) % c.height;
+            ctx.fillStyle = i % 3 === 0 ? 'rgba(190,225,200,0.035)' : 'rgba(0,0,0,0.045)';
+            ctx.fillRect(x, y, 1 + (i % 3), 1);
         }
-
-        ctx.strokeStyle = 'rgba(218, 178, 62, 0.34)';
-        ctx.lineWidth = 2;
-        for (let i = 0; i < 95; i++) {
-            const x = 55 + (i * 11) % 910;
-            const y = 70 + ((i * 41) % 880);
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + 75, y);
-            ctx.lineTo(x + 115, y + 38);
-            ctx.lineTo(x + 220, y + 38);
+        // Fine copper paths following orthogonal PCB routing conventions.
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (let i = 0; i < 92; i++) {
+            const x = 35 + (i * 83) % 1070;
+            const y = 28 + (i * 137) % 960;
+            const len = 34 + (i % 7) * 18;
+            const rise = ((i % 5) - 2) * 15;
+            ctx.strokeStyle = i % 4 === 0 ? 'rgba(221,177,82,0.36)' : 'rgba(96,177,126,0.27)';
+            ctx.lineWidth = i % 6 === 0 ? 3 : 1.5;
+            ctx.beginPath(); ctx.moveTo(x, y);
+            ctx.lineTo(x + len * 0.42, y);
+            ctx.lineTo(x + len * 0.62, y + rise);
+            ctx.lineTo(x + len, y + rise);
             ctx.stroke();
-
-            ctx.fillStyle = '#eab308';
-            ctx.beginPath();
-            ctx.arc(x, y, 2.8, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillStyle = 'rgba(230,190,100,0.65)';
+            ctx.beginPath(); ctx.arc(x, y, 2.0, 0, Math.PI * 2); ctx.fill();
         }
+        // Subtle perimeter and component placement outlines.
+        ctx.strokeStyle = 'rgba(207,224,211,0.36)'; ctx.lineWidth = 2;
+        ctx.strokeRect(22, 22, 1108, 980);
+        ctx.strokeStyle = 'rgba(207,224,211,0.20)'; ctx.lineWidth = 2;
+        ctx.strokeRect(365, 270, 220, 250); // CPU socket keep-out
+        ctx.strokeRect(700, 150, 330, 440); // DIMM region
+        ctx.strokeRect(405, 620, 320, 95);  // M.2 area
+        ctx.strokeRect(250, 770, 490, 75);  // PCIe area
 
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(45, 720);
-        ctx.lineTo(190, 720);
-        ctx.lineTo(220, 760);
-        ctx.lineTo(220, 975);
-        ctx.stroke();
-
-        ctx.fillStyle = 'rgba(241, 245, 249, 0.9)';
-        ctx.font = 'bold 22px monospace';
-        ctx.fillText('SIM-HARDWARE Z890-PRO ATX', 65, 968);
-
-        ctx.font = 'bold 14px monospace';
-        ctx.fillStyle = '#fde047';
-        ctx.fillText('SOCKET LGA1851 (CPU)', 375, 235);
-        ctx.fillText('DDR5_DIMM_A1 / B1 (RAM)', 630, 128);
-        ctx.fillText('M.2_NVME_PCIe5 (SSD)', 365, 515);
-        ctx.fillText('PCIEX16_STEEL (VGA)', 215, 642);
-        ctx.fillText('ATX_PWR_24PIN', 835, 340);
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillText('HD_AUDIO', 80, 910);
-        ctx.fillText('SATA6G_1..4', 790, 860);
+        // Silk-screen component labels and polarity markers.
+        ctx.fillStyle = 'rgba(226,237,226,0.83)';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText('LGA1700 CPU SOCKET', 378, 255);
+        ctx.fillText('DDR4 DIMM A1  A2  B1  B2', 700, 135);
+        ctx.fillText('M.2 NVMe 2280', 420, 610);
+        ctx.fillText('PCIe x16', 265, 760);
+        ctx.fillText('ATX 24-PIN', 970, 570);
+        ctx.font = 'bold 16px monospace';
+        ctx.fillStyle = 'rgba(229,190,104,0.88)';
+        ctx.fillText('Z790  •  DDR4  •  ATX', 55, 970);
+        ctx.fillText('SIM-HARDWARE TRAINING BOARD', 780, 970);
 
         const tex = new THREE.CanvasTexture(c);
         tex.anisotropy = 8;
+        if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
         return tex;
     }
 
@@ -120,12 +121,12 @@ window.HardwareTextures = (function () {
         ctx.fillStyle = '#0f172a';
         ctx.font = 'bold 31px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('INTEL® CORE™ ULTRA 9', 256, 165);
+        ctx.fillText('INTEL® CORE™ i9', 256, 165);
         ctx.font = 'bold 25px monospace';
-        ctx.fillText('285K • 5.70GHz • 24-CORE', 256, 215);
+        ctx.fillText('14900K • 6.00GHz • 24-CORE', 256, 215);
         ctx.font = '19px monospace';
         ctx.fillStyle = '#334155';
-        ctx.fillText('SRL42 • LGA1851', 256, 265);
+        ctx.fillText('SRMBJ • LGA1700', 256, 265);
         ctx.fillText('SMPIT SAHABAT ALAM', 256, 315);
 
         ctx.fillStyle = '#eab308';
@@ -148,51 +149,46 @@ window.HardwareTextures = (function () {
         const ctx = c.getContext('2d');
 
         const pcbGrad = ctx.createLinearGradient(0, 0, 0, 256);
-        pcbGrad.addColorStop(0, '#16a34a');
-        pcbGrad.addColorStop(0.5, '#15803d');
-        pcbGrad.addColorStop(1, '#14532d');
+        pcbGrad.addColorStop(0, '#0b713b');
+        pcbGrad.addColorStop(0.48, '#075b31');
+        pcbGrad.addColorStop(1, '#064526');
         ctx.fillStyle = pcbGrad;
         ctx.fillRect(0, 0, 1024, 256);
 
-        ctx.strokeStyle = 'rgba(134, 239, 172, 0.30)';
-        ctx.lineWidth = 2;
-        for (let i = 16; i < 1008; i += 14) {
+        // Silkscreen halus dan jalur konduktor pada PCB hijau.
+        ctx.strokeStyle = 'rgba(151, 220, 164, 0.26)';
+        ctx.lineWidth = 1.5;
+        for (let i = 12; i < 1010; i += 13) {
             ctx.beginPath();
-            ctx.moveTo(i, 224);
-            ctx.lineTo(i, 175);
-            ctx.lineTo(i + 8, 155);
-            ctx.lineTo(i + 8, 32);
+            ctx.moveTo(i, 245);
+            ctx.lineTo(i, 207);
+            ctx.lineTo(i + 8, 187);
+            ctx.lineTo(i + 8, 22 + ((i * 7) % 42));
             ctx.stroke();
         }
+        ctx.strokeStyle = 'rgba(217, 172, 72, 0.35)';
+        ctx.lineWidth = 1;
+        for (let i = 25; i < 1000; i += 48) {
+            ctx.beginPath(); ctx.moveTo(i, 12); ctx.lineTo(i + 18, 38); ctx.lineTo(i + 18, 90); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(i + 18, 174); ctx.lineTo(i + 30, 205); ctx.lineTo(i + 30, 250); ctx.stroke();
+        }
 
-        ctx.fillStyle = '#facc15';
-        [36, 512, 988].forEach(vx => {
-            ctx.beginPath();
-            ctx.arc(vx, 32, 7, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#052e16';
-            ctx.beginPath();
-            ctx.arc(vx, 32, 3.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#facc15';
-        });
+        // Via plated dan penanda posisi komponen.
+        for (let i = 0; i < 38; i++) {
+            const x = 18 + i * 27;
+            ctx.fillStyle = '#d6a83b'; ctx.beginPath(); ctx.arc(x, 20 + (i % 3) * 8, 3.2, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#052b19'; ctx.beginPath(); ctx.arc(x, 20 + (i % 3) * 8, 1.3, 0, Math.PI * 2); ctx.fill();
+        }
 
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(365, 58, 294, 96);
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(365, 58, 294, 96);
-
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 21px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText('16GB 2Rx8 PC5-5600B', 380, 92);
-        ctx.font = '16px monospace';
-        ctx.fillStyle = '#334155';
-        ctx.fillText('DDR5 SDRAM • 1.1V • GREEN PCB', 380, 120);
-        ctx.fillText('SN: 2026-TIK-VII-0891', 380, 142);
+        // Silkscreen teknis pada PCB; stiker putih fisik dibuat sebagai mesh 3D.
+        ctx.fillStyle = 'rgba(231, 245, 235, .78)';
+        ctx.font = 'bold 13px monospace';
+        ctx.fillText('A2 / B2 KIT', 38, 238);
+        ctx.fillText('DDR4 UDIMM • PC4-25600', 735, 238);
 
         const tex = new THREE.CanvasTexture(c);
+        if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+        else if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
         tex.anisotropy = 8;
         return tex;
     }
@@ -229,7 +225,7 @@ window.HardwareTextures = (function () {
 
         ctx.fillStyle = '#e2e8f0';
         ctx.font = 'bold 17px monospace';
-        ctx.fillText('NVIDIA RTX 5090 • 32GB GDDR7', 512, 350);
+        ctx.fillText('RTX 4080 SUPER • 16GB GDDR6X', 512, 350);
 
         const tex = new THREE.CanvasTexture(c);
         tex.anisotropy = 8;
@@ -406,10 +402,10 @@ window.HardwareTextures = (function () {
         ctx.fillText('SSD NVMe M.2', 176, 86);
         ctx.fillStyle = '#38bdf8';
         ctx.font = 'bold 24px monospace';
-        ctx.fillText('1TB • PCIe Gen5 x4', 176, 132);
+        ctx.fillText('1TB • PCIe Gen4 x4', 176, 132);
         ctx.fillStyle = '#cbd5e1';
         ctx.font = '17px monospace';
-        ctx.fillText('Read 12000MB/s • 2280', 176, 176);
+        ctx.fillText('Read 7400MB/s • 2280', 176, 176);
 
         return new THREE.CanvasTexture(c);
     }
@@ -442,7 +438,7 @@ window.HardwareTextures = (function () {
         ctx.fillStyle = '#fde047';
         ctx.fillText('DC OUTPUT: +12V (70A) | +5V (20A) | +3.3V (20A)', 44, 152);
         ctx.fillStyle = '#4ade80';
-        ctx.fillText('STATUS   : POWER SUPPLY EKSTERNAL MOTHERBOARD', 44, 188);
+        ctx.fillText('FULL MODULAR • ACTIVE PFC • 120mm FAN', 44, 188);
 
         return new THREE.CanvasTexture(c);
     }
@@ -473,10 +469,10 @@ window.HardwareTextures = (function () {
 
             ctx.fillStyle = '#e2e8f0';
             ctx.font = '21px monospace';
-            ctx.fillText('CPU : Intel(R) Core(TM) Ultra 9 285K @ 5.70GHz [OK]', 48, 150);
-            ctx.fillText('MEM : 16384 MB DDR5-5600 Green PCB Dual-Ch     [OK]', 48, 198);
-            ctx.fillText('SSD : 1000 GB NVMe M.2 PCIe Gen5 x4            [OK]', 48, 246);
-            ctx.fillText('VGA : NVIDIA GeForce RTX 5090 32GB GDDR7       [OK]', 48, 294);
+            ctx.fillText('CPU : Intel(R) Core(TM) i9-14900K @ 6.00GHz [OK]', 48, 150);
+            ctx.fillText('MEM : 16384 MB DDR4-3200 Green PCB Dual-Ch     [OK]', 48, 198);
+            ctx.fillText('SSD : 1000 GB NVMe M.2 PCIe Gen4 x4            [OK]', 48, 246);
+            ctx.fillText('VGA : NVIDIA GeForce RTX 4080 SUPER 16GB       [OK]', 48, 294);
             ctx.fillText('PSU : 850W ATX 3.1 24-Pin + 16-Pin PCIe Power  [OK]', 48, 342);
 
             ctx.fillStyle = '#4ade80';
@@ -528,9 +524,9 @@ window.HardwareTextures = (function () {
 
             ctx.fillStyle = '#e2e8f0';
             ctx.font = '18px sans-serif';
-            ctx.fillText('• CPU     : Intel Core Ultra 9 285K (LGA1851)', 248, 230);
-            ctx.fillText('• RAM     : 16GB DDR5 Green PCB Dual-Channel', 248, 265);
-            ctx.fillText('• VGA     : NVIDIA GeForce RTX 5090 32GB GDDR7', 248, 300);
+            ctx.fillText('• CPU     : Intel Core i9-14900K (LGA1700)', 248, 230);
+            ctx.fillText('• RAM     : 16GB DDR4 Green PCB Dual-Channel', 248, 265);
+            ctx.fillText('• VGA     : NVIDIA GeForce RTX 4080 SUPER 16GB', 248, 300);
             ctx.fillText('• CASING  : Armaggeddon White ATX Edition', 248, 335);
             ctx.fillText('• MONITOR : Samsung Odyssey OLED Display', 248, 370);
 
